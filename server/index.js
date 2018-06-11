@@ -5,6 +5,10 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const app = express();
 const router = require('./router');
+const mongoose = require('mongoose');
+
+// DB Setup
+mongoose.connect('mongodb://ninjaba:ninjaba2018@ds153460.mlab.com:53460/ninjaba-webapp');
 
 // App Setup
 app.use(morgan('combined')); // Middleware in express
