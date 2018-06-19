@@ -1,10 +1,17 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
-import { playersFetchData } from '../actions/players';
+import { Column } from 'primereact/components/column/Column';
+import { DataTable } from 'primereact/components/datatable/DataTable';
+import { playersFetchData } from '../../actions/players';
+
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/omega/theme.css';
 
 class PlayerList extends Component {
     componentDidMount() {
-        this.props.fetchData('http://599167402df2f40011e4929a.mockapi.io/items');
+        //this.props.fetchData('http://599167402df2f40011e4929a.mockapi.io/items');
+        this.props.fetchData('http://localhost:3090/players');
     }
 
     render() {
@@ -17,13 +24,23 @@ class PlayerList extends Component {
         }
 
         return (
+          <div>
             <ul>
-                {this.props.items.map((item) => (
-                    <li key={item.id}>
-                        {item.label}
+                {this.props.players.map((players) => (
+                    <li key={players.id}>
+                        {players.Tm}
+                        {players.Player}
+                        {players.Age}
                     </li>
                 ))}
             </ul>
+            <DataTable value={this.props.players}>
+                <Column field="id" header="id" />
+                <Column field="Tm" header="Team" sortable={true} />
+                <Column field="Player" header="Player" sortable={true} />
+                <Column field="Age" header="Age" sortable={true} />
+            </DataTable>
+          </div>
         );
     }
 }
