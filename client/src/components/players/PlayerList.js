@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { itemsFetchData } from '../actions/items';
+import { playersFetchData } from '../actions/players';
 
 class PlayerList extends Component {
     componentDidMount() {
@@ -30,22 +30,22 @@ class PlayerList extends Component {
 
 PlayerList.propTypes = {
     fetchData: PropTypes.func.isRequired,
-    items: PropTypes.array.isRequired,
-    hasErrored: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    players: PropTypes.array.isRequired,
+    playersHasErrored: PropTypes.bool.isRequired,
+    playersIsLoading: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => {
     return {
-        items: state.items,
-        hasErrored: state.itemsHasErrored,
-        isLoading: state.itemsIsLoading
+        players: state.players,
+        playersHasErrored: state.playersHasErrored,
+        playersIsLoading: state.playersIsLoading
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: (url) => dispatch(itemsFetchData(url))
+        fetchData: (url) => dispatch(playersFetchData(url))
     };
 };
 

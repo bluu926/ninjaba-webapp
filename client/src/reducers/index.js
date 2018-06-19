@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import auth from './auth';
-import { itemsIsLoading } from './items';
+import { playersIsLoading, playersHasErrored, players } from './players';
 
 export default combineReducers({
   auth,
-  itemsIsLoading,
+  playersIsLoading,
+  playersHasErrored,
+  players,
   form: formReducer
 });

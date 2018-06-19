@@ -1,35 +1,35 @@
-import { ITEMS_HAS_ERRORED, ITEMS_IS_LOADING, ITEMS_FETCH_DATA_SUCCESS  } from './types';
+import { PLAYERS_HAS_ERRORED, PLAYERS_IS_LOADING, PLAYERS_FETCH_DATA_SUCCESS  } from './types';
 
-export function itemsHasErrored(bool) {
+export function playersHasErrored(bool) {
   return {
-    type: ITEMS_HAS_ERRORED,
-    hasErrored: bool
+    type: PLAYERS_HAS_ERRORED,
+    playersHasErrored: bool
   };
 }
 
-export function itemsIsLoading(bool) {
+export function playersIsLoading(bool) {
   return {
-    type: ITEMS_IS_LOADING,
-    isLoading: bool
+    type: PLAYERS_IS_LOADING,
+    playersIsLoading: bool
   };
 }
 
-export function itemsFetchDataSuccess(items) {
+export function playersFetchDataSuccess(items) {
   return {
-    type: ITEMS_FETCH_DATA_SUCCESS,
-    items
+    type: PLAYERS_FETCH_DATA_SUCCESS,
+    players
   };
 }
 
-export function itemsFetchData = (url) => async dispatch => {
+export function playersFetchData = (url) => async dispatch => {
   try {
 
-    dispatch(itemsIsLoading(true));
+    dispatch(playersIsLoading(true));
     const response = await axios.get(url);
-    dispatch(itemsIsLoading(false));
-    dispatch(itemsFetchDataSuccess(response.data));
+    dispatch(playersIsLoading(false));
+    dispatch(playersFetchDataSuccess(response.data));
   } catch(e) {
-    dispatch(itemsHasErrored(true));
+    dispatch(playersHasErrored(true));
   }
 
     // return (dispatch) => {
