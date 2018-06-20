@@ -7,6 +7,7 @@ import { playersFetchData } from '../../actions/players';
 
 import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/omega/theme.css';
+import 'font-awesome/css/font-awesome.css';
 
 class PlayerList extends Component {
     componentDidMount() {
@@ -40,6 +41,35 @@ class PlayerList extends Component {
                 <Column field="Player" header="Player" sortable={true} />
                 <Column field="Age" header="Age" sortable={true} />
             </DataTable>
+
+            <Dialog visible={this.state.displayDialog} header="Car Details" modal={true} footer={dialogFooter} onHide={() => this.setState({displayDialog: false})}>
+              {this.state.car && <div className="ui-grid ui-grid-responsive ui-fluid">
+                  <div className="ui-grid-row">
+                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="vin">Vin</label></div>
+                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                      {/* <InputText id="vin" onChange={(e) => {this.updateProperty('vin', e.target.value)}} value={this.state.car.vin}/> */}
+                    </div>
+                  </div>
+                  <div className="ui-grid-row">
+                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="year">Year</label></div>
+                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                      {/* <InputText id="year" onChange={(e) => {this.updateProperty('year', e.target.value)}} value={this.state.car.year}/> */}
+                    </div>
+                  </div>
+                  <div className="ui-grid-row">
+                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="brand">Brand</label></div>
+                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                      {/* <InputText id="brand" onChange={(e) => {this.updateProperty('brand', e.target.value)}} value={this.state.car.brand}/> */}
+                    </div>
+                  </div>
+                  <div className="ui-grid-row">
+                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="color">Color</label></div>
+                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                      {/* <InputText id="color" onChange={(e) => {this.updateProperty('color', e.target.value)}} value={this.state.car.color}/> */}
+                    </div>
+                  </div>
+              </div>}
+            </Dialog>
           </div>
         );
     }
