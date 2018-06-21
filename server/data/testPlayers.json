@@ -3,13 +3,15 @@
     "id": "1",
     "Tm": "OKC",
     "Player": "First Player",
-    "Age": 25
+    "Age": 25,
+    "Image": "unknown.png"
   },
   {
     "id": "2",
     "Tm": "GSW",
-    "Player": "Second Player",
-    "Age": 22
+    "Player": "Stephen Curry",
+    "Age": 22,
+    "Image": "stephen_curry_gsw.png"
   },
   {
     "id": "3",

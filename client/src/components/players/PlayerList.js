@@ -7,9 +7,16 @@ import { Dialog } from 'primereact/components/dialog/Dialog';
 import { DataTable } from 'primereact/components/datatable/DataTable';
 import { playersFetchData } from '../../actions/players';
 
+import unknown from '../../images/avatars/players/unknown.png';
 import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/omega/theme.css';
+import 'primeicons/primeicons.css';
 import 'font-awesome/css/font-awesome.css';
+
+const imgStyle = {
+  'width': '260px',
+  'height': '190px'
+}
 
 class PlayerList extends Component {
     constructor(props) {
@@ -24,10 +31,16 @@ class PlayerList extends Component {
     }
 
     onPlayerSelect(e){
+        //alert(e.data.Image);
         this.setState({
             displayDialog:true,
             player: Object.assign({}, e.data)
         });
+    }
+
+    reset() {
+      //console.log(this.dt);
+      //this.dt.exportCSV();
     }
 
     render() {
@@ -39,11 +52,11 @@ class PlayerList extends Component {
             return <p>Loading…</p>;
         }
 
-        let paginatorLeft = <Button icon="fa-refresh"/>;
-        let paginatorRight = <Button icon="fa-cloud-upload"/>;
+        let paginatorLeft = <Button icon="pi pi-refresh" onClick={this.reset}/>;
+        let paginatorRight = <Button icon="fa fa-cloud-upload"/>;
         let dialogFooter = <div className="ui-dialog-buttonpane ui-helper-clearfix">
-                <Button icon="fa-close" label="Delete" />
-                <Button label="Save" icon="fa-check" />
+                <Button icon="fa fa-close" label="Delete" />
+                <Button label="Save" icon="pi pi-check" />
             </div>;
 
         return (
@@ -54,11 +67,13 @@ class PlayerList extends Component {
                         {players.Tm}
                         {players.Player}
                         {players.Age}
+                        {players.Image}
                     </li>
                 ))}
             </ul>
-            <DataTable value={this.props.players} paginator={true} paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
-                    rows={1} selectionMode="single" rowsPerPageOptions={[1,2,3,5,10,20]} sortMode="multiple"
+            <DataTable value={this.props.players} ref={(el) => { this.dt = el; }}
+                  paginator={true} paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
+                  rows={10} selectionMode="single" rowsPerPageOptions={[1,2,3,5,10,20]} sortMode="multiple"
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
                   onRowSelect={this.onPlayerSelect}>
 
@@ -66,10 +81,24 @@ class PlayerList extends Component {
                 <Column field="Tm" header="Team" sortable={true} filter={true} />
                 <Column field="Player" header="Player" sortable={true} filter={true} />
                 <Column field="Age" header="Age" sortable={true} filter={true} />
+
             </DataTable>
 
             <Dialog visible={this.state.displayDialog} header="Player Details" modal={true} footer={dialogFooter} onHide={() => this.setState({displayDialog: false})}>
               {this.state.player && <div className="ui-grid ui-grid-responsive ui-fluid">
+                  {/* <div className="ui-grid-row">
+                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}>
+                        <img style={imgStyle} src={unknown}
+                          alt={this.state.player.Image}/>
+                    </div>
+                  </div> */}
+                  <div className="ui-grid-row">
+                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                        <img style={imgStyle} src={`http://localhost:3090/images/headshots/players/${this.state.player.Image}`}
+                            onError={(e)=>{e.target.src=unknown}}
+                          alt={this.state.player.Image}/>
+                    </div>
+                  </div>
                   <div className="ui-grid-row">
                     <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="team">Team</label></div>
                     <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>

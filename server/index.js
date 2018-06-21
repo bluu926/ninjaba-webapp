@@ -15,7 +15,10 @@ mongoose.connect('mongodb://ninjaba:ninjaba2018@ds153460.mlab.com:53460/ninjaba-
 app.use(morgan('combined')); // Middleware in express
 app.use(cors());
 app.use(bodyParser.json({ type: '*/*'})); // Middleware in express
+
+app.use(express.static('data'));
 router(app);
+
 
 
 // Server Setup
