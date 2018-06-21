@@ -103,9 +103,9 @@ class PlayerList extends Component {
             <ul>
                 {this.props.players.map((players) => (
                     <li key={players.id}>
-                        {players.Tm}
-                        {players.Player}
-                        {players.Age}
+                        {players.tm}
+                        {players.player}
+                        {players.age}
                         {players.image}
                         {players.owner}
                     </li>
@@ -118,9 +118,9 @@ class PlayerList extends Component {
                   onRowSelect={this.onPlayerSelect}>
 
                 {/* <Column field="id" header="id" /> */}
-                <Column field="Tm" header="Team" sortable={true} filter={true} />
-                <Column field="Player" header="Player" sortable={true} filter={true} />
-                <Column field="Age" header="Age" sortable={true} filter={true} />
+                <Column field="tm" header="Team" sortable={true} filter={true} />
+                <Column field="player" header="Player" sortable={true} filter={true} />
+                <Column field="age" header="Age" sortable={true} filter={true} />
 
             </DataTable>
 
@@ -130,19 +130,19 @@ class PlayerList extends Component {
                     <div className="ui-grid-col-12" style={{padding:'4px 10px'}}>
                         <img style={imgStyle} src={`http://localhost:3090/images/headshots/players/${this.state.player.image}`}
                             onError={(e)=>{e.target.src=unknown}}
-                          alt={this.state.player.Image}/>
+                          alt={this.state.player.image}/>
                     </div>
                   </div>
                   <div className="ui-grid-row">
                     <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="team">Team</label></div>
                     <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
-                        {this.state.player.Tm}
+                        {this.state.player.tm}
                     </div>
                   </div>
                   <div className="ui-grid-row">
                     <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="year">Player</label></div>
                     <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
-                        {this.state.player.Player}
+                        {this.state.player.player}
                     </div>
                   </div>
                   <div className="ui-grid-row">
@@ -181,8 +181,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  requireAuth
+  connect(mapStateToProps, mapDispatchToProps)
+  // requireAuth
 )(PlayerList);
 
 //export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);
