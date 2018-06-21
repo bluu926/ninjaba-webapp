@@ -5,7 +5,12 @@ const Schema = mongoose.Schema;
 const playerSchema = new Schema({
   Tm: String,
   Player: String,
-  Age: Number
+  Age: Number,
+  image: String,
+  owner: {
+    type: String,
+    default: '--Free Agent--'
+  }
 });
 
 // Create model class

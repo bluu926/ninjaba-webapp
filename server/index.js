@@ -19,8 +19,6 @@ app.use(bodyParser.json({ type: '*/*'})); // Middleware in express
 app.use(express.static('data'));
 router(app);
 
-
-
 // Server Setup
 const port = process.env.PORT || 3090;
 const server = http.createServer(app);

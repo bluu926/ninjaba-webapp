@@ -3,19 +3,22 @@
     "id": "1",
     "Tm": "OKC",
     "Player": "First Player",
-    "Age": 25
+    "Age": 25,
+    "owner": "Ben"
   },
   {
     "id": "2",
     "Tm": "GSW",
     "Player": "Stephen Curry",
     "Age": 22,
-    "Image": "stephen_curry_gsw.png"
+    "image": "stephen_curry_gsw.png",
+    "owner": "Hugo"
   },
   {
     "id": "3",
     "Tm": "HOU",
     "Player": "Third Player",
-    "Age": 30
+    "Age": 30,
+    "owner": "--Free Agent--"
   }
 ]

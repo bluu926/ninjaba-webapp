@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
+import { compose } from 'redux'
 import { connect } from 'react-redux';
 import { Button } from 'primereact/components/button/Button';
 import { Column } from 'primereact/components/column/Column';
 import { Dialog } from 'primereact/components/dialog/Dialog';
 import { DataTable } from 'primereact/components/datatable/DataTable';
+
 import { playersFetchData } from '../../actions/players';
+import requireAuth from '../requireAuth';
 
 import unknown from '../../images/avatars/players/unknown.png';
 import 'primereact/resources/primereact.min.css';
@@ -43,6 +46,46 @@ class PlayerList extends Component {
       //this.dt.exportCSV();
     }
 
+    addPlayer(player) {
+      alert(player.id);
+      alert(this.props.userEmailAddress);
+    }
+
+    dropPlayer(player) {
+      if (player.owner === 'Ben') {
+        alert('test');
+      }
+    }
+
+    cancelDialog() {
+      this.setState({
+        displayDialog:false
+      });
+    }
+
+    getFooter() {
+      if (this.state.selectedPlayer) {
+        if (this.state.selectedPlayer.owner === '--Free Agent--') {
+          return (<div className="ui-dialog-buttonpane ui-helper-clearfix">
+                <Button icon="fa fa-close" label="Cancel" onClick={() => this.cancelDialog()} />
+                <Button label="Add" icon="pi pi-check" onClick={() => this.addPlayer(this.state.selectedPlayer)} />
+            </div>
+          );
+        } else if (this.state.selectedPlayer.owner === 'Ben') {
+          return (<div className="ui-dialog-buttonpane ui-helper-clearfix">
+                <Button icon="fa fa-close" label="Cancel" onClick={() => this.cancelDialog()} />
+                <Button label="Drop" icon="pi pi-check" onClick={() => this.dropPlayer(this.state.selectedPlayer)} />
+            </div>
+          );
+        } else {
+          return (<div className="ui-dialog-buttonpane ui-helper-clearfix">
+                <Button icon="fa fa-close" label="Cancel" onClick={() => this.cancelDialog()} />
+            </div>
+          );
+        }
+      }
+    }
+
     render() {
         if (this.props.hasErrored) {
             return <p>Sorry! There was an error loading the items</p>;
@@ -54,10 +97,6 @@ class PlayerList extends Component {
 
         let paginatorLeft = <Button icon="pi pi-refresh" onClick={this.reset}/>;
         let paginatorRight = <Button icon="fa fa-cloud-upload"/>;
-        let dialogFooter = <div className="ui-dialog-buttonpane ui-helper-clearfix">
-                <Button icon="fa fa-close" label="Delete" />
-                <Button label="Save" icon="pi pi-check" />
-            </div>;
 
         return (
           <div>
@@ -67,7 +106,8 @@ class PlayerList extends Component {
                         {players.Tm}
                         {players.Player}
                         {players.Age}
-                        {players.Image}
+                        {players.image}
+                        {players.owner}
                     </li>
                 ))}
             </ul>
@@ -77,44 +117,38 @@ class PlayerList extends Component {
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
                   onRowSelect={this.onPlayerSelect}>
 
-                <Column field="id" header="id" />
+                {/* <Column field="id" header="id" /> */}
                 <Column field="Tm" header="Team" sortable={true} filter={true} />
                 <Column field="Player" header="Player" sortable={true} filter={true} />
                 <Column field="Age" header="Age" sortable={true} filter={true} />
 
             </DataTable>
 
-            <Dialog visible={this.state.displayDialog} header="Player Details" modal={true} footer={dialogFooter} onHide={() => this.setState({displayDialog: false})}>
+            <Dialog visible={this.state.displayDialog} header="Player Details" modal={true} footer={this.getFooter()} onHide={() => this.setState({displayDialog: false})}>
               {this.state.player && <div className="ui-grid ui-grid-responsive ui-fluid">
-                  {/* <div className="ui-grid-row">
-                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}>
-                        <img style={imgStyle} src={unknown}
-                          alt={this.state.player.Image}/>
-                    </div>
-                  </div> */}
                   <div className="ui-grid-row">
-                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
-                        <img style={imgStyle} src={`http://localhost:3090/images/headshots/players/${this.state.player.Image}`}
+                    <div className="ui-grid-col-12" style={{padding:'4px 10px'}}>
+                        <img style={imgStyle} src={`http://localhost:3090/images/headshots/players/${this.state.player.image}`}
                             onError={(e)=>{e.target.src=unknown}}
                           alt={this.state.player.Image}/>
                     </div>
                   </div>
                   <div className="ui-grid-row">
-                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="team">Team</label></div>
-                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="team">Team</label></div>
+                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
                         {this.state.player.Tm}
                     </div>
                   </div>
                   <div className="ui-grid-row">
-                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="year">Player</label></div>
-                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
+                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="year">Player</label></div>
+                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
                         {this.state.player.Player}
                     </div>
                   </div>
                   <div className="ui-grid-row">
-                    <div className="ui-grid-col-4" style={{padding:'4px 10px'}}><label htmlFor="brand">Age</label></div>
-                    <div className="ui-grid-col-8" style={{padding:'4px 10px'}}>
-                        {this.state.player.Age}
+                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="brand">Owner</label></div>
+                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
+                        {this.state.player.owner}
                     </div>
                   </div>
               </div>}
@@ -133,6 +167,7 @@ PlayerList.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
+        userEmailAddress: state.auth.userEmailAddress,
         players: state.players,
         playersHasErrored: state.playersHasErrored,
         playersIsLoading: state.playersIsLoading
@@ -145,4 +180,9 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  requireAuth
+)(PlayerList);
+
+//export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);

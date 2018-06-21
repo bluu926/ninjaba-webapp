@@ -25,7 +25,9 @@ export function playersFetchDataSuccess(players) {
 export const playersFetchData = (url) => async dispatch => {
   try {
     dispatch(playersIsLoading(true));
-    const response = await axios.get(url);
+    const response = await axios.get(url, {headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
     dispatch(playersIsLoading(false));
     dispatch(playersFetchDataSuccess(response.data.playerList));
   } catch(e) {
