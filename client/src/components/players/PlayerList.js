@@ -8,12 +8,13 @@ import { Dropdown } from 'primereact/components/dropdown/Dropdown';
 import { InputText } from 'primereact/components/inputtext/InputText';
 import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
-
 import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
-import { Icon, Label, Menu, Table } from 'semantic-ui-react';
+import { Icon, Message, Table } from 'semantic-ui-react';
 import { playersFetchData } from '../../actions/players';
 import requireAuth from '../requireAuth';
+
 import playerTeam from '../../data/playerTeam.json';
+import playerListColumnsDefault from '../../data/playerListColumnsDefault.json';
 import playerListColumns from '../../data/playerListColumns.json';
 
 import unknown from '../../images/avatars/players/unknown.png';
@@ -27,7 +28,7 @@ class PlayerList extends Component {
         super(props);
         this.state = {
           team: null,
-          cols: playerListColumns
+          cols: playerListColumnsDefault
         };
 
         this.colOptions = [];
@@ -144,6 +145,30 @@ class PlayerList extends Component {
       );}
     }
 
+    renderMessage() {
+      // if(this.props.message) {
+          return (
+            <Message positive>
+              <Message.Header>Success!</Message.Header>
+              <p>
+                You have added <b>Stephen Curry</b>.
+              </p>
+            </Message>
+          );
+      }
+    // }
+
+    renderAlert() {
+        // if(this.props.errorMessage) {
+          return (
+            <Message negative>
+              <Message.Header>Error!</Message.Header>
+              <p>Someone has added before you.</p>
+            </Message>
+          );
+      // }
+    }
+
     render() {
         if (this.props.hasErrored) {
             return <p>Sorry! There was an error loading the items</p>;
@@ -184,6 +209,8 @@ class PlayerList extends Component {
         return (
           <div>
             {this.openModal()}
+            {this.renderAlert()}
+    				{this.renderMessage()}
             <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
                   paginator={true} paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
                   rows={25} selectionMode="single" rowsPerPageOptions={[1,2,3,5,10,20]} sortMode="multiple"

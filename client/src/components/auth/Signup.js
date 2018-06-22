@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux'
 import { connect } from 'react-redux';
-import { Button, Message, Icon, Form, Input } from 'semantic-ui-react';
+import { Button, Icon, Form, Input, Label } from 'semantic-ui-react';
 import * as actions from '../../actions';
 
 const required = value => (value || typeof value === 'number' ? undefined : 'Required');
@@ -15,10 +15,17 @@ const renderField = ({
     input, label, type, meta: { touched, error, warning }
   }) => (
       <Form.Field>
-        <Form.Input style={{width:"370px"}} {...input} label={label} placeholder={label} type={type} error={false} />
-        <Message success header="Test" />
-        {touched && ((error && <span><Message error header={error} /></span>) ||
-                      (warning && <span>{warning}</span>))}
+        <div style={{display: "inline-block", textAlign: "left", width:"370px"}}>
+          <Label>
+            {label}<Icon style={{"padding-left":"5px"}} name="asterisk" />
+          </Label>
+          <Form.Input {...input} placeholder={label} type={type} error={false} />
+          {touched && ((error && <span>
+            <Label style={{"margin-top": "0em"}}color='red' pointing>
+              {error}
+            </Label>
+            </span>) || (warning && <span>{warning}</span>))}
+        </div>
       </Form.Field>
 );
 
@@ -54,7 +61,7 @@ class Signup extends Component {
           <div>
             {this.props.errorMessage}
           </div>
-          <Button><Icon name="save" />Sign Up!</Button>
+          <Button color='teal'><Icon name="basketball ball" />Sign Up!</Button>
         </Form>
       </div>
     );
