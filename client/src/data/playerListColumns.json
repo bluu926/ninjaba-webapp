@@ -1,0 +1,8 @@
+[
+    {"field": "tm", "header": "Team", "filter": true, "filterMatchMode": "contains",  "filterElement": "teamFilter"},
+    {"field": "player", "header": "Player", "filter": true, "filterMatchMode": "contains"},
+    {"field": "age", "header": "Age", "filter": true, "filterMatchMode": "contains"},
+    {"field": "fg", "header": "Field Goal Made"},
+    {"field": "fga", "header": "Field Goal Attempted"},
+    {"field": "fg%", "header": "Field Goal %"}
+]

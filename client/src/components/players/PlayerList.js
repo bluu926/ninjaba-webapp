@@ -4,13 +4,17 @@ import { compose } from 'redux'
 import { connect } from 'react-redux';
 import { Button } from 'primereact/components/button/Button';
 import { Column } from 'primereact/components/column/Column';
-import { Dialog } from 'primereact/components/dialog/Dialog';
+import { Dropdown } from 'primereact/components/dropdown/Dropdown';
+import { InputText } from 'primereact/components/inputtext/InputText';
+import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
 
 import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Label, Menu, Table } from 'semantic-ui-react';
 import { playersFetchData } from '../../actions/players';
 import requireAuth from '../requireAuth';
+import playerTeam from '../../data/playerTeam.json';
+import playerListColumns from '../../data/playerListColumns.json';
 
 import unknown from '../../images/avatars/players/unknown.png';
 import 'primereact/resources/primereact.min.css';
@@ -21,8 +25,19 @@ import 'font-awesome/css/font-awesome.css';
 class PlayerList extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+          team: null,
+          cols: playerListColumns
+        };
+
+        this.colOptions = [];
+        for(let col of playerListColumns) {
+            this.colOptions.push({label: col.header, value: col});
+        }
+
         this.onPlayerSelect = this.onPlayerSelect.bind(this);
+        this.onTeamChange = this.onTeamChange.bind(this);
+        this.onColumnToggle = this.onColumnToggle.bind(this);
     }
 
     componentDidMount() {
@@ -44,9 +59,17 @@ class PlayerList extends Component {
       });
     }
 
-    reset() {
-      //console.log(this.dt);
-      //this.dt.exportCSV();
+    onTeamChange(event) {
+      this.dt.filter(event.value, 'tm', 'equals');
+      this.setState({team: event.value});
+    }
+
+    onColumnToggle(event) {
+      this.setState({cols: event.value});
+    }
+
+    reset = () => {
+      this.dt.exportCSV();
     }
 
     addPlayer(player) {
@@ -130,33 +153,52 @@ class PlayerList extends Component {
             return <p>Loading…</p>;
         }
 
+        var header = <div>
+                      <div style={{'textAlign':'left'}}>
+                        <h1>Players Dashboard</h1>
+                        <i className="fa fa-search" style={{margin:'4px 4px 0 0'}}></i>
+                        <InputText type="search" onInput={(e) => this.setState({globalFilter: e.target.value})} placeholder="Global Search" size="50"/>
+                      </div>
+                      <div style={{'textAlign':'right'}}>
+                        <MultiSelect value={this.state.cols} options={this.colOptions} onChange={this.onColumnToggle} style={{width:'400px'}}/>
+                      </div>
+                    </div>;
+
         let paginatorLeft = <Button icon="pi pi-refresh" onClick={this.reset}/>;
         let paginatorRight = <Button icon="fa fa-cloud-upload"/>;
+
+        let teamFilter = <Dropdown style={{width: '100%'}} className="ui-column-filter"
+                value={this.state.team} options={playerTeam} onChange={this.onTeamChange}/>
+
+        let columns = this.state.cols.map((col,i) => {
+              if(col.filterElement === 'teamFilter') {
+                return <Column key={col.field} field={col.field} header={col.header}
+                sortable={true} filter={col.filter} filterMatchMode={col.filterMatchMode}
+                filterElement={teamFilter} />;
+              } else {
+                return <Column key={col.field} field={col.field} header={col.header}
+                sortable={true} filter={col.filter} filterMatchMode={col.filterMatchMode} />;
+              }
+        });
 
         return (
           <div>
             {this.openModal()}
-            <ul>
-                {this.props.players.map((players) => (
-                    <li key={players.id}>
-                        {players.tm}
-                        {players.player}
-                        {players.age}
-                        {players.image}
-                        {players.owner}
-                    </li>
-                ))}
-            </ul>
-            <DataTable value={this.props.players} ref={(el) => { this.dt = el; }}
+            <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
                   paginator={true} paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
-                  rows={10} selectionMode="single" rowsPerPageOptions={[1,2,3,5,10,20]} sortMode="multiple"
+                  rows={25} selectionMode="single" rowsPerPageOptions={[1,2,3,5,10,20]} sortMode="multiple"
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
-                  onRowSelect={this.onPlayerSelect}>
+                  onRowSelect={this.onPlayerSelect} globalFilter={this.state.globalFilter}>
+
+                {columns}
 
                 {/* <Column field="id" header="id" /> */}
-                <Column field="tm" header="Team" sortable={true} filter={true} />
-                <Column field="player" header="Player" sortable={true} filter={true} />
-                <Column field="age" header="Age" sortable={true} filter={true} />
+                {/* <Column field="tm" header="Team" sortable={true} filter={true} filterMatchMode="contains" filterElement={teamFilter} />
+                <Column field="player" header="Player" sortable={true} filter={true} filterMatchMode="contains" />
+                <Column field="age" header="Age" sortable={true} filter={true} filterMatchMode="contains" />
+                <Column field="fg" header="fg" sortable={true} filter={true} filterMatchMode="contains" />
+                <Column field="fga" header="fga" sortable={true} filter={true} filterMatchMode="contains" />
+                <Column field="fg%" header="fg%" sortable={true} filter={true} filterMatchMode="contains" /> */}
 
             </DataTable>
           </div>
@@ -187,8 +229,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
-  // requireAuth
+  connect(mapStateToProps, mapDispatchToProps),
+  requireAuth
 )(PlayerList);
 
 //export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);

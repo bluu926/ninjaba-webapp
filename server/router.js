@@ -13,6 +13,6 @@ module.exports = function(app) {
   app.post('/signin', requireSignin, Authentication.signin);
   app.post('/signup', Authentication.signup);
 
-  //app.get('/players', requireAuth, Player.getPlayers);
-  app.get('/players',  Player.getPlayers);
+  app.get('/players', requireAuth, Player.getPlayers);
+  // app.get('/players',  Player.getPlayers);
 }

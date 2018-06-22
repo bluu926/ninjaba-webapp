@@ -3,9 +3,12 @@ const Schema = mongoose.Schema;
 
 // Define user model
 const playerSchema = new Schema({
-  Tm: String,
-  Player: String,
-  Age: Number,
+  tm: String,
+  player: String,
+  age: Number,
+  fg: Number,
+  fga: Number,
+  'fg%': Number,
   image: String,
   owner: {
     type: String,
