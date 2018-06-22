@@ -7,6 +7,8 @@ import { Column } from 'primereact/components/column/Column';
 import { Dialog } from 'primereact/components/dialog/Dialog';
 import { DataTable } from 'primereact/components/datatable/DataTable';
 
+import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
+import { Icon, Label, Menu, Table } from 'semantic-ui-react';
 import { playersFetchData } from '../../actions/players';
 import requireAuth from '../requireAuth';
 
@@ -15,11 +17,6 @@ import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/omega/theme.css';
 import 'primeicons/primeicons.css';
 import 'font-awesome/css/font-awesome.css';
-
-const imgStyle = {
-  'width': '260px',
-  'height': '190px'
-}
 
 class PlayerList extends Component {
     constructor(props) {
@@ -34,11 +31,17 @@ class PlayerList extends Component {
     }
 
     onPlayerSelect(e){
-        //alert(e.data.Image);
+        //alert(e.data.image);
         this.setState({
-            displayDialog:true,
+            open:true,
             player: Object.assign({}, e.data)
         });
+    }
+
+    closeModal = () => {
+      this.setState({
+        open:false
+      });
     }
 
     reset() {
@@ -57,33 +60,65 @@ class PlayerList extends Component {
       }
     }
 
-    cancelDialog() {
-      this.setState({
-        displayDialog:false
-      });
-    }
-
     getFooter() {
       if (this.state.selectedPlayer) {
         if (this.state.selectedPlayer.owner === '--Free Agent--') {
-          return (<div className="ui-dialog-buttonpane ui-helper-clearfix">
-                <Button icon="fa fa-close" label="Cancel" onClick={() => this.cancelDialog()} />
-                <Button label="Add" icon="pi pi-check" onClick={() => this.addPlayer(this.state.selectedPlayer)} />
-            </div>
+          return (
+            <SemanticModal.Actions>
+              <SemanticButton onClick={() => this.closeModal()}>
+                <Icon name="cancel"/>Cancel
+              </SemanticButton>
+              <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+                <Icon name="checkmark"/>Add
+              </SemanticButton>
+            </SemanticModal.Actions>
           );
         } else if (this.state.selectedPlayer.owner === 'Ben') {
-          return (<div className="ui-dialog-buttonpane ui-helper-clearfix">
-                <Button icon="fa fa-close" label="Cancel" onClick={() => this.cancelDialog()} />
-                <Button label="Drop" icon="pi pi-check" onClick={() => this.dropPlayer(this.state.selectedPlayer)} />
-            </div>
+          return (
+            <SemanticModal.Actions>
+              <SemanticButton onClick={() => this.closeModal()}>
+                <Icon name="cancel"/>Cancel
+              </SemanticButton>
+              <SemanticButton negative onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+                <Icon name="trash alternate"/>Drop
+              </SemanticButton>
+            </SemanticModal.Actions>
           );
         } else {
-          return (<div className="ui-dialog-buttonpane ui-helper-clearfix">
-                <Button icon="fa fa-close" label="Cancel" onClick={() => this.cancelDialog()} />
-            </div>
+          return (
+            <SemanticModal.Actions>
+              <SemanticButton onClick={() => this.closeModal()}>
+                <Icon name="cancel"/>Cancel
+              </SemanticButton>
+            </SemanticModal.Actions>
           );
         }
       }
+    }
+
+    openModal() {
+      if (this.state.selectedPlayer) {
+      return (
+        <SemanticModal open={this.state.open} onClose={this.closeModal} closeIcon>
+          <SemanticModal.Header>Player Details</SemanticModal.Header>
+          <SemanticModal.Content image>
+            <SemanticImage wrapped size='medium' src={`http://localhost:3090/images/headshots/players/${this.state.selectedPlayer.image}`}
+              onError={(e)=>{e.target.src=unknown}} />
+            <SemanticModal.Description>
+              <SemanticHeader>{this.state.selectedPlayer.player}</SemanticHeader>
+              <Table celled>
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell>Team</Table.Cell>
+                    <Table.Cell>{this.state.selectedPlayer.tm}</Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table>
+            </SemanticModal.Description>
+          </SemanticModal.Content>
+          {this.getFooter()}
+        </SemanticModal>
+      );}
     }
 
     render() {
@@ -100,6 +135,7 @@ class PlayerList extends Component {
 
         return (
           <div>
+            {this.openModal()}
             <ul>
                 {this.props.players.map((players) => (
                     <li key={players.id}>
@@ -123,36 +159,6 @@ class PlayerList extends Component {
                 <Column field="age" header="Age" sortable={true} filter={true} />
 
             </DataTable>
-
-            <Dialog visible={this.state.displayDialog} header="Player Details" modal={true} footer={this.getFooter()} onHide={() => this.setState({displayDialog: false})}>
-              {this.state.player && <div className="ui-grid ui-grid-responsive ui-fluid">
-                  <div className="ui-grid-row">
-                    <div className="ui-grid-col-12" style={{padding:'4px 10px'}}>
-                        <img style={imgStyle} src={`http://localhost:3090/images/headshots/players/${this.state.player.image}`}
-                            onError={(e)=>{e.target.src=unknown}}
-                          alt={this.state.player.image}/>
-                    </div>
-                  </div>
-                  <div className="ui-grid-row">
-                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="team">Team</label></div>
-                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
-                        {this.state.player.tm}
-                    </div>
-                  </div>
-                  <div className="ui-grid-row">
-                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="year">Player</label></div>
-                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
-                        {this.state.player.player}
-                    </div>
-                  </div>
-                  <div className="ui-grid-row">
-                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}><label htmlFor="brand">Owner</label></div>
-                    <div className="ui-grid-col-6" style={{padding:'4px 10px'}}>
-                        {this.state.player.owner}
-                    </div>
-                  </div>
-              </div>}
-            </Dialog>
           </div>
         );
     }
