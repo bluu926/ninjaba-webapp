@@ -1,4 +1,5 @@
 [
+    {"field": "owner", "header": "Owner", "filter": true, "filterMatchMode": "contains"},
     {"field": "player", "header": "Player", "filter": true, "filterMatchMode": "contains"},
     {"field": "tm", "header": "Team", "filter": true, "filterMatchMode": "contains",  "filterElement": "teamFilter"},
     {"field": "fg", "header": "Field Goal Made"},

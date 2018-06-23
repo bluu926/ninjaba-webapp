@@ -17,7 +17,7 @@ exports.getPlayers = function (req, res, next) {
 exports.addPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = 'Add';
+  const transactionType = req.params.transactionType;
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -65,7 +65,7 @@ exports.addPlayer = function(req, res, next) {
 exports.dropPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = 'Drop';
+  const transactionType = req.params.transactionType;
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -102,7 +102,7 @@ function recordTransaction(username, transactionType, playerName) {
   let transaction = new Transaction({
     username: username,
     transactionType: transactionType,
-    playerName: foundPlayer.player
+    playerName: playerName
   });
 
   transaction.save(function(err, transaction) {

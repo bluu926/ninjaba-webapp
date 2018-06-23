@@ -10,7 +10,7 @@ import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
 import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Message, Table } from 'semantic-ui-react';
-import { playersFetchData } from '../../actions/players';
+import { playersFetchData, playerTransaction } from '../../actions/players';
 import requireAuth from '../requireAuth';
 
 import playerTeam from '../../data/playerTeam.json';
@@ -74,8 +74,13 @@ class PlayerList extends Component {
     }
 
     addPlayer(player) {
-      alert(player.id);
+      alert(player._id);
       alert(this.props.userEmailAddress);
+      this.props.playerTransaction(player._id,this.props.userEmailAddress,'add');
+
+      this.setState({
+        open:false
+      })
     }
 
     dropPlayer(player) {
@@ -251,7 +256,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: (url) => dispatch(playersFetchData(url))
+        fetchData: (url) => dispatch(playersFetchData(url)),
+        playerTransaction: (playerId, username, transactionType) => dispatch(playerTransaction(playerId, username, transactionType))
     };
 };
 

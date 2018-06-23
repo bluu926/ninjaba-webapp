@@ -15,6 +15,7 @@ module.exports = function(app) {
   app.post('/signup', Authentication.signup);
 
   app.get('/players', requireAuth, Player.getPlayers);
+  app.get('/api/playertransaction/:playerId/:username/:transactionType', requireAuth, Player.addPlayer);
   // app.get('/players',  Player.getPlayers);
 
   app.get('/email', mailService.sendmail);

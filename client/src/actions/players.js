@@ -1,6 +1,8 @@
 import { PLAYERS_HAS_ERRORED, PLAYERS_IS_LOADING, PLAYERS_FETCH_DATA_SUCCESS  } from './types';
 import axios from 'axios';
 
+const API_URL = 'http://localhost:3090/api';
+
 export function playersHasErrored(bool) {
   return {
     type: PLAYERS_HAS_ERRORED,
@@ -33,22 +35,21 @@ export const playersFetchData = (url) => async dispatch => {
   } catch(e) {
     dispatch(playersHasErrored(true));
   }
+}
 
-    // return (dispatch) => {
-    //     dispatch(itemsIsLoading(true));
+export const playerTransaction = (playerId, username, transactionType) => async dispatch => {
+  try {
+    const response = await axios.get(`${API_URL}/playertransaction/${playerId}/${username}/${transactionType}`, {headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
+
+    // const temp = await axios.get('http://localhost:3090/players', {headers: {
+    //     "Authorization" : localStorage.getItem('token')
+    //   }});
     //
-    //     fetch(url)
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 throw Error(response.statusText);
-    //             }
-    //
-    //             dispatch(itemsIsLoading(false));
-    //
-    //             return response;
-    //         })
-    //         .then((response) => response.json())
-    //         .then((items) => dispatch(itemsFetchDataSuccess(items)))
-    //         .catch(() => dispatch(itemsHasErrored(true)));
-    // };
+    // dispatch(playersFetchDataSuccess(response.data.playerList));
+
+  } catch(e) {
+
+  }
 }
