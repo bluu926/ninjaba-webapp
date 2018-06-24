@@ -1,7 +1,6 @@
 import { PLAYERS_HAS_ERRORED, PLAYERS_IS_LOADING, PLAYERS_FETCH_DATA_SUCCESS  } from './types';
+import * as config from '../config';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:3090/api';
 
 export function playersHasErrored(bool) {
   return {
@@ -27,7 +26,7 @@ export function playersFetchDataSuccess(players) {
 export const playersFetchData = (url) => async dispatch => {
   try {
     dispatch(playersIsLoading(true));
-    const response = await axios.get(url, {headers: {
+    const response = await axios.get(`${config.API_URL}/players`, {headers: {
         "Authorization" : localStorage.getItem('token')
       }});
     dispatch(playersIsLoading(false));
@@ -39,15 +38,15 @@ export const playersFetchData = (url) => async dispatch => {
 
 export const playerTransaction = (playerId, username, transactionType) => async dispatch => {
   try {
-    const response = await axios.get(`${API_URL}/playertransaction/${playerId}/${username}/${transactionType}`, {headers: {
+    const response = await axios.get(`${config.API_URL}/playertransaction/${playerId}/${username}/${transactionType}`, {headers: {
         "Authorization" : localStorage.getItem('token')
       }});
 
-    // const temp = await axios.get('http://localhost:3090/players', {headers: {
-    //     "Authorization" : localStorage.getItem('token')
-    //   }});
-    //
-    // dispatch(playersFetchDataSuccess(response.data.playerList));
+    const temp = await axios.get(`${config.API_URL}/players`, {headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
+
+    dispatch(playersFetchDataSuccess(temp.data.playerList));
 
   } catch(e) {
 

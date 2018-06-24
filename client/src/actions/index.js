@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { AUTH_USER, AUTH_ERROR, AUTH_USER_EMAIL } from './types';
+import * as config from '../config'
 
 export const signup = (formProps, callback) => async dispatch => {
   try {
-    const response = await axios.post('http://localhost:3090/signup', formProps);
+    const response = await axios.post(`${config.API_URL}/signup`, formProps);
 
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_USER_EMAIL, payload: formProps.email });
@@ -17,7 +18,7 @@ export const signup = (formProps, callback) => async dispatch => {
 
 export const signin = (formProps, callback) => async dispatch => {
   try {
-    const response = await axios.post('http://localhost:3090/signin', formProps);
+    const response = await axios.post(`${config.API_URL}/signin`, formProps);
 
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_USER_EMAIL, payload: formProps.email });

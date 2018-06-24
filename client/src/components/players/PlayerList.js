@@ -43,7 +43,7 @@ class PlayerList extends Component {
 
     componentDidMount() {
         //this.props.fetchData('http://599167402df2f40011e4929a.mockapi.io/items');
-        this.props.fetchData('http://localhost:3090/players');
+        this.props.fetchData();
     }
 
     onPlayerSelect(e){
@@ -74,8 +74,6 @@ class PlayerList extends Component {
     }
 
     addPlayer(player) {
-      alert(player._id);
-      alert(this.props.userEmailAddress);
       this.props.playerTransaction(player._id,this.props.userEmailAddress,'add');
 
       this.setState({
@@ -84,9 +82,11 @@ class PlayerList extends Component {
     }
 
     dropPlayer(player) {
-      if (player.owner === 'Ben') {
-        alert('test');
-      }
+      this.props.playerTransaction(player._id,this.props.userEmailAddress,'drop');
+
+      this.setState({
+        open:false
+      })
     }
 
     getFooter() {
@@ -102,13 +102,13 @@ class PlayerList extends Component {
               </SemanticButton>
             </SemanticModal.Actions>
           );
-        } else if (this.state.selectedPlayer.owner === 'Ben') {
+        } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {
           return (
             <SemanticModal.Actions>
               <SemanticButton onClick={() => this.closeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
-              <SemanticButton negative onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+              <SemanticButton negative onClick={() => this.dropPlayer(this.state.selectedPlayer)}>
                 <Icon name="trash alternate"/>Drop
               </SemanticButton>
             </SemanticModal.Actions>
@@ -131,7 +131,7 @@ class PlayerList extends Component {
         <SemanticModal open={this.state.open} onClose={this.closeModal} closeIcon>
           <SemanticModal.Header>Player Details</SemanticModal.Header>
           <SemanticModal.Content image>
-            <SemanticImage wrapped size='medium' src={`http://localhost:3090/images/headshots/players/${this.state.selectedPlayer.image}`}
+            <SemanticImage wrapped size='medium' src={`https://ninjaba.herokuapp.com/images/headshots/players/${this.state.selectedPlayer.image}`}
               onError={(e)=>{e.target.src=unknown}} />
             <SemanticModal.Description>
               <SemanticHeader>{this.state.selectedPlayer.player}</SemanticHeader>
@@ -156,7 +156,7 @@ class PlayerList extends Component {
             <Message positive>
               <Message.Header>Success!</Message.Header>
               <p>
-                You have added <b>Stephen Curry</b>.
+                You have added <b>placeholder</b>.
               </p>
             </Message>
           );
@@ -169,6 +169,7 @@ class PlayerList extends Component {
             <Message negative>
               <Message.Header>Error!</Message.Header>
               <p>Someone has added before you.</p>
+              <p><b>placeholder</b> is no longer available.</p>
             </Message>
           );
       // }
@@ -256,7 +257,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: (url) => dispatch(playersFetchData(url)),
+        fetchData: (url) => dispatch(playersFetchData()),
         playerTransaction: (playerId, username, transactionType) => dispatch(playerTransaction(playerId, username, transactionType))
     };
 };
