@@ -10,7 +10,7 @@ class Header extends Component {
         <div>
           <Link to="/players">Players</Link>
           <Link to="/signout">Sign Out</Link>
-          <Link to="/feature">Feature</Link>
+          <Link to="/dashboard">Dashboard</Link>
         </div>
       );
     } else {

@@ -36,7 +36,7 @@ ReactDOM.render(
         <Route path="/signin" component={Signin} />
         <Route path="/signup" component={Signup} />
         <Route path="/signout" component={Signout} />
-        <Route path="/feature" component={Dashboard} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/players" component={PlayerList} />
       </App>
     </BrowserRouter>
