@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { AUTH_USER, AUTH_ERROR, AUTH_USER_EMAIL } from './types';
-import * as config from '../config'
+import * as config from '../config';
 
 export const signup = (formProps, callback) => async dispatch => {
   try {
