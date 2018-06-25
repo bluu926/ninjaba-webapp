@@ -4,3 +4,5 @@ export const AUTH_ERROR = 'auth_error';
 export const PLAYERS_FETCH_DATA_SUCCESS = 'players_fetch_data_success';
 export const PLAYERS_IS_LOADING = 'players_id_loading';
 export const PLAYERS_HAS_ERRORED = 'players_has_errored';
+export const PLAYERS_TRANSACTION_SUCCESS = 'players_transaction_success';
+export const PLAYERS_TRANSACTION_ERRORED = 'players_transaction_errored';

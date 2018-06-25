@@ -5,8 +5,8 @@ import requireAuth from './requireAuth';
 const styles = {
   textAlign: 'center',
   display: 'flex',
-  'align-items': 'center',
-  'justify-content': 'center'
+  alignItems: 'center',
+  justifyContent: 'center'
 };
 
 class Dashboard extends Component {

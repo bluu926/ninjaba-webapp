@@ -10,7 +10,7 @@ import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
 import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Message, Table } from 'semantic-ui-react';
-import { playersFetchData, playerTransaction } from '../../actions/players';
+import { playersFetchData, playersTransaction } from '../../actions/players';
 import requireAuth from '../requireAuth';
 
 import playerTeam from '../../data/playerTeam.json';
@@ -28,7 +28,8 @@ class PlayerList extends Component {
         super(props);
         this.state = {
           team: null,
-          cols: playerListColumnsDefault
+          cols: playerListColumnsDefault,
+          rows: 25
         };
 
         this.colOptions = [];
@@ -42,12 +43,10 @@ class PlayerList extends Component {
     }
 
     componentDidMount() {
-        //this.props.fetchData('http://599167402df2f40011e4929a.mockapi.io/items');
         this.props.fetchData();
     }
 
     onPlayerSelect(e){
-        //alert(e.data.image);
         this.setState({
             open:true,
             player: Object.assign({}, e.data)
@@ -74,7 +73,7 @@ class PlayerList extends Component {
     }
 
     addPlayer(player) {
-      this.props.playerTransaction(player._id,this.props.userEmailAddress,'add');
+      this.props.playersTransaction(player._id,this.props.userEmailAddress,'add');
 
       this.setState({
         open:false
@@ -82,7 +81,7 @@ class PlayerList extends Component {
     }
 
     dropPlayer(player) {
-      this.props.playerTransaction(player._id,this.props.userEmailAddress,'drop');
+      this.props.playersTransaction(player._id,this.props.userEmailAddress,'drop');
 
       this.setState({
         open:false
@@ -151,28 +150,31 @@ class PlayerList extends Component {
     }
 
     renderMessage() {
-      // if(this.props.message) {
+      if(this.props.playersTransactionSuccess) {
           return (
             <Message positive>
               <Message.Header>Success!</Message.Header>
-              <p>
-                You have added <b>placeholder</b>.
-              </p>
+              <p>Your transaction was a success!</p>
             </Message>
           );
       }
-    // }
+    }
 
     renderAlert() {
-        // if(this.props.errorMessage) {
-          return (
-            <Message negative>
-              <Message.Header>Error!</Message.Header>
-              <p>Someone has added before you.</p>
-              <p><b>placeholder</b> is no longer available.</p>
-            </Message>
-          );
-      // }
+      if(this.props.playersTransactionErrored) {
+        return (
+          <Message negative>
+            <Message.Header>Error!</Message.Header>
+            <p>Your transaction has failed.</p>
+          </Message>
+        );
+      }
+    }
+
+    onPageChange(e) {
+      this.setState({
+        rows: e.rows
+      });
     }
 
     render() {
@@ -188,7 +190,7 @@ class PlayerList extends Component {
                       <div style={{'textAlign':'left'}}>
                         <h1>Players Dashboard</h1>
                         <i className="fa fa-search" style={{margin:'4px 4px 0 0'}}></i>
-                        <InputText type="search" onInput={(e) => this.setState({globalFilter: e.target.value})} placeholder="Global Search" size="50"/>
+                        <InputText type="search" onInput={(e) => this.setState({globalFilter: e.target.value})} placeholder="Global Search" size="30"/>
                       </div>
                       <div style={{'textAlign':'right'}}>
                         <MultiSelect value={this.state.cols} options={this.colOptions} onChange={this.onColumnToggle} style={{width:'400px'}}/>
@@ -213,15 +215,16 @@ class PlayerList extends Component {
         });
 
         return (
-          <div>
+          <div style={{'margin-top': '30px'}}>
             {this.openModal()}
             {this.renderAlert()}
     				{this.renderMessage()}
             <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
                   paginator={true} paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
-                  rows={25} selectionMode="single" rowsPerPageOptions={[1,2,3,5,10,20]} sortMode="multiple"
+                  rows={this.state.rows} selectionMode="single" rowsPerPageOptions={[10,25,50,100]} sortMode="multiple"
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
-                  onRowSelect={this.onPlayerSelect} globalFilter={this.state.globalFilter}>
+                  onRowSelect={this.onPlayerSelect} globalFilter={this.state.globalFilter}
+                  onPage={(e) => {this.onPageChange(e)}}>
 
                 {columns}
 
@@ -243,7 +246,9 @@ PlayerList.propTypes = {
     fetchData: PropTypes.func.isRequired,
     players: PropTypes.array.isRequired,
     playersHasErrored: PropTypes.bool.isRequired,
-    playersIsLoading: PropTypes.bool.isRequired
+    playersIsLoading: PropTypes.bool.isRequired,
+    playersTransactionSuccess: PropTypes.bool.isRequired,
+    playersTransactionErrored: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -251,14 +256,16 @@ const mapStateToProps = (state) => {
         userEmailAddress: state.auth.userEmailAddress,
         players: state.players,
         playersHasErrored: state.playersHasErrored,
-        playersIsLoading: state.playersIsLoading
+        playersIsLoading: state.playersIsLoading,
+        playersTransactionSuccess: state.playersTransactionSuccess,
+        playersTransactionErrored: state.playersTransactionErrored
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchData: (url) => dispatch(playersFetchData()),
-        playerTransaction: (playerId, username, transactionType) => dispatch(playerTransaction(playerId, username, transactionType))
+        playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType))
     };
 };
 

@@ -1,4 +1,4 @@
-import { PLAYERS_HAS_ERRORED, PLAYERS_IS_LOADING, PLAYERS_FETCH_DATA_SUCCESS  } from './types';
+import { PLAYERS_HAS_ERRORED, PLAYERS_IS_LOADING, PLAYERS_FETCH_DATA_SUCCESS, PLAYERS_TRANSACTION_SUCCESS, PLAYERS_TRANSACTION_ERRORED } from './types';
 import * as config from '../config';
 import axios from 'axios';
 
@@ -23,6 +23,20 @@ export function playersFetchDataSuccess(players) {
   };
 }
 
+export function playersTransactionSuccess(bool) {
+  return {
+    type: PLAYERS_TRANSACTION_SUCCESS,
+    playersTransactionSuccess: bool
+  };
+}
+
+export function playersTransactionErrored(bool) {
+  return {
+    type: PLAYERS_TRANSACTION_ERRORED,
+    playersTransactionErrored: bool
+  };
+}
+
 export const playersFetchData = (url) => async dispatch => {
   try {
     dispatch(playersIsLoading(true));
@@ -36,8 +50,11 @@ export const playersFetchData = (url) => async dispatch => {
   }
 }
 
-export const playerTransaction = (playerId, username, transactionType) => async dispatch => {
+export const playersTransaction = (playerId, username, transactionType) => async dispatch => {
   try {
+    dispatch(playersTransactionSuccess(false));
+    dispatch(playersTransactionErrored(false));
+
     const response = await axios.get(`${config.API_URL}/playertransaction/${playerId}/${username}/${transactionType}`, {headers: {
         "Authorization" : localStorage.getItem('token')
       }});
@@ -46,9 +63,10 @@ export const playerTransaction = (playerId, username, transactionType) => async 
         "Authorization" : localStorage.getItem('token')
       }});
 
+    dispatch(playersTransactionSuccess(true));
     dispatch(playersFetchDataSuccess(temp.data.playerList));
 
   } catch(e) {
-
+    dispatch(playersTransactionErrored(true));
   }
 }
