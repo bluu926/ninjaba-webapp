@@ -9,6 +9,7 @@ const userSchema = new Schema({
     unique: true,
     lowercase: true
   },
+  name: String,
   password: String
 });
 

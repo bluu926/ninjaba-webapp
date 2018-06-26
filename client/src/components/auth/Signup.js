@@ -51,6 +51,14 @@ class Signup extends Component {
             validate={required}
           />
           <Field
+            label="Name"
+            name="name"
+            type="text"
+            component={renderField}
+            autoComplete="none"
+            validate={required}
+          />
+          <Field
             label="Password"
             name="password"
             type="password"

@@ -1,6 +1,7 @@
 const jwt = require('jwt-simple');
 const User = require('../models/user');
 const config = require('../config');
+const mailService = require('../services/mailer');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
@@ -16,8 +17,9 @@ exports.signin = function (req, res, next) {
 exports.signup = function (req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
+  const name = req.body.name;
 
-  if ( !email || !password ) {
+  if ( !email || !password || !name ) {
     return res.status(422).send({ error: 'You must provide email and password.' });
   }
 
@@ -34,12 +36,14 @@ exports.signup = function (req, res, next) {
     // Create and save user record
     const user = new User({
       email: email,
+      name: name,
       password: password
     });
 
     user.save(function(err) {
       if (err) { return next(err); }
 
+      mailService.sendRegistration({ email, name })
       // Respond to request indicating the user was created
       res.json({ token: tokenForUser(user) });
     });

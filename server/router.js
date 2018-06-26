@@ -19,5 +19,5 @@ module.exports = function(app) {
   app.get('/api/playertransaction/:playerId/:username/drop', requireAuth, Player.dropPlayer);
   // app.get('/players',  Player.getPlayers);
 
-  app.get('/email', mailService.sendmail);
+  // app.get('/email', mailService.sendmail);
 }

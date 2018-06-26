@@ -26,3 +26,17 @@ exports.sendmail = function (req, res, next) {
 
   res.send({success: "Sent"});
 }
+
+exports.sendRegistration = function (mailOptions) {
+  const name = mailOptions.name;
+  sgMail.setApiKey(mailConfig.SG_API_KEY);
+
+  const msg = {
+    from: 'admin@ninjaba.com',
+    to: mailOptions.email,
+    subject: 'Ninja Basketball Registration',
+    html: 'Thank you <strong>' + name + '</strong> for registration to Ninja Basketball.'
+  }
+
+  sgMail.send(msg);
+}
