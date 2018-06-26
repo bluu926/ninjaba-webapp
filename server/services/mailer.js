@@ -31,7 +31,7 @@ exports.sendmail = function (req, res, next) {
 
 exports.sendRegistration = function (mailOptions) {
   const name = mailOptions.name;
-  sgMail.setApiKey(mailConfig.SG_API_KEY);
+  sgMail.setApiKey(sgApiKey);
 
   const msg = {
     from: 'admin@ninjaba.com',
