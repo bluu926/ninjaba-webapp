@@ -7,12 +7,12 @@ class HeaderBar extends Component {
   render() {
     return (
       <Menu stackable>
-        <Menu.Item as={NavLink} exact to='/' content='Home' />
-        <Menu.Item as={NavLink} exact to='/dashboard' content='Dashboard' />
-        {/* <Menu.Item as={NavLink} exact to='/players' content='Players' /> */}
-        <Menu.Item as={NavLink} exact to='/signout' content='Sign Out' />
-        <Menu.Item as={NavLink} exact to='/signup' content='Sign Up' />
-        <Menu.Item as={NavLink} exact to='/signin' content='Sign In' />
+        <Menu.Item as={NavLink} active={this.isActive('/')} exact to='/' content='Home' />
+        <Menu.Item as={NavLink} active={this.isActive('/dashboard')} exact to='/dashboard' content='Dashboard' />
+        <Menu.Item as={NavLink} active={this.isActive('/players')} exact to='/players' content='Players' />
+        <Menu.Item as={NavLink} active={this.isActive('/signout')} exact to='/signout' content='Sign Out' />
+        <Menu.Item as={NavLink} active={this.isActive('/signup')} exact to='/signup' content='Sign Up' />
+        <Menu.Item as={NavLink} active={this.isActive('/signin')} exact to='/signin' content='Sign In' />
       </Menu>
     );
   }

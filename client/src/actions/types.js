@@ -6,3 +6,5 @@ export const PLAYERS_IS_LOADING = 'players_id_loading';
 export const PLAYERS_HAS_ERRORED = 'players_has_errored';
 export const PLAYERS_TRANSACTION_SUCCESS = 'players_transaction_success';
 export const PLAYERS_TRANSACTION_ERRORED = 'players_transaction_errored';
+export const WAIVER_ADD_SUCCESS = 'waiver_add_success';
+export const WAIVER_ADD_ERRORED = 'waiver_add_errored';

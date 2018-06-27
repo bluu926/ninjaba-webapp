@@ -11,6 +11,7 @@ import { DataTable } from 'primereact/components/datatable/DataTable';
 import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Message, Table } from 'semantic-ui-react';
 import { playersFetchData, playersTransaction } from '../../actions/players';
+import * as waiverActions from '../../actions/waivers';
 import requireAuth from '../requireAuth';
 
 import playerTeam from '../../data/playerTeam.json';
@@ -73,7 +74,8 @@ class PlayerList extends Component {
     }
 
     addPlayer(player) {
-      this.props.playersTransaction(player._id,this.props.userEmailAddress,'add');
+      // this.props.playersTransaction(player._id,this.props.userEmailAddress,'add');
+      this.props.addWaiver({ email: this.props.userEmailAddress, playerId: player._id, bid: 50 })
 
       this.setState({
         open:false
@@ -258,14 +260,17 @@ const mapStateToProps = (state) => {
         playersHasErrored: state.playersHasErrored,
         playersIsLoading: state.playersIsLoading,
         playersTransactionSuccess: state.playersTransactionSuccess,
-        playersTransactionErrored: state.playersTransactionErrored
+        playersTransactionErrored: state.playersTransactionErrored,
+        waiverAddSuccess: state.waiverAddSuccess,
+        waiverAddErrored: state.waiverAddErrored
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchData: (url) => dispatch(playersFetchData()),
-        playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType))
+        playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType)),
+        addWaiver: (email, playerId, bid) => dispatch(waiverActions.addWaiver(email, playerId, bid))
     };
 };
 

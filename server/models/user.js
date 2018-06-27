@@ -10,7 +10,9 @@ const userSchema = new Schema({
     lowercase: true
   },
   name: String,
-  password: String
+  password: String,
+  waiverPriority: Number,
+  faab: Number
 });
 
 // On Save Hook, encrypt password
