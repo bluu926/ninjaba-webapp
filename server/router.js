@@ -19,7 +19,8 @@ module.exports = function(app) {
   app.get('/api/playertransaction/:playerId/:username/add', requireAuth, Player.addPlayer);
   app.get('/api/playertransaction/:playerId/:username/drop', requireAuth, Player.dropPlayer);
 
-  app.post('/api/addWaiver', Waiver.addWaiver);
+  app.post('/api/waiver/addWaiver', Waiver.addWaiver);
+  app.post('/api/waiver/getPlayersToDrop', Waiver.getPlayersToDrop);
   // app.get('/players',  Player.getPlayers);
 
   // app.get('/email', mailService.sendmail);

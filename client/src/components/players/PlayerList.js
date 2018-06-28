@@ -8,7 +8,8 @@ import { Dropdown } from 'primereact/components/dropdown/Dropdown';
 import { InputText } from 'primereact/components/inputtext/InputText';
 import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
-import { Button as SemanticButton, Input as SemanticInput, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
+import { Button as SemanticButton, Input as SemanticInput, Header as SemanticHeader,
+  Message as SemanticMessage, Image as SemanticImage, List as SemanticList, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Message, Table } from 'semantic-ui-react';
 import { playersFetchData, playersTransaction } from '../../actions/players';
 import * as waiverActions from '../../actions/waivers';
@@ -45,19 +46,27 @@ class PlayerList extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchData();
+      this.props.fetchData();
     }
 
     onPlayerSelect(e){
-        this.setState({
-            open:true,
-            player: Object.assign({}, e.data)
-        });
+      this.setState({
+          tradeModal:true,
+          player: Object.assign({}, e.data)
+      });
     }
 
-    closeModal = () => {
+    closeTradeModal = () => {
       this.setState({
-        open:false
+        tradeModal:false,
+        bid: 0
+      });
+    }
+
+    closeWaiverDropModal = () => {
+      this.setState({
+        waiverDropModal:false,
+        bid: 0
       });
     }
 
@@ -78,29 +87,37 @@ class PlayerList extends Component {
       this.setState({ bid: e.target.value });
     }
 
-    addWaiver(playerId) {
+    waiverProceedToDrop(addPlayerId) {
+       this.props.getPlayersToDrop({ email: this.props.userEmailAddress });
+
+      this.setState({
+        tradeModal:false,
+        waiverDropModal:true
+      });
+    }
+
+    addWaiver(addPlayerId, dropPlayerId, bid) {
       // alert(playerId + ' ' + this.state.bid + ' '+ this.props.userEmailAddress);
       this.props.addWaiver({
         email: this.props.userEmailAddress,
-        playerId,
-        bid: this.state.bid
+        addPlayerId,
+        dropPlayerId,
+        bid
       });
+
+      this.closeWaiverDropModal();
     }
 
     addPlayer(player) {
       this.props.playersTransaction(player._id,this.props.userEmailAddress,'add');
 
-      this.setState({
-        open:false
-      })
+      this.closeTradeModal();
     }
 
     dropPlayer(player) {
       this.props.playersTransaction(player._id,this.props.userEmailAddress,'drop');
 
-      this.setState({
-        open:false
-      })
+      this.closeTradeModal();
     }
 
     getFooter() {
@@ -108,12 +125,12 @@ class PlayerList extends Component {
         if (this.state.selectedPlayer.owner === '--Free Agent--') {
           return (
             <SemanticModal.Actions>
-              <SemanticButton onClick={() => this.closeModal()}>
+              <SemanticButton onClick={() => this.closeTradeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
               <SemanticInput onChange={this.handleBidChange} icon='money bill alternate outline' iconPosition='left' placeholder='Bid' />
-              <SemanticButton primary onClick={() => this.addWaiver(this.state.selectedPlayer._id)}>
-                <Icon name="checkmark"/>Bid
+              <SemanticButton primary onClick={() => this.waiverProceedToDrop(this.state.selectedPlayer._id)}>
+                Bid<Icon name="arrow right"/>
               </SemanticButton>
               {/* <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
                 <Icon name="checkmark"/>Add
@@ -123,7 +140,7 @@ class PlayerList extends Component {
         } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {
           return (
             <SemanticModal.Actions>
-              <SemanticButton onClick={() => this.closeModal()}>
+              <SemanticButton onClick={() => this.closeTradeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
               <SemanticButton negative onClick={() => this.dropPlayer(this.state.selectedPlayer)}>
@@ -134,7 +151,7 @@ class PlayerList extends Component {
         } else {
           return (
             <SemanticModal.Actions>
-              <SemanticButton onClick={() => this.closeModal()}>
+              <SemanticButton onClick={() => this.closeTradeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
             </SemanticModal.Actions>
@@ -143,29 +160,87 @@ class PlayerList extends Component {
       }
     }
 
-    openModal() {
+    openTradeModal() {
       if (this.state.selectedPlayer) {
-      return (
-        <SemanticModal open={this.state.open} onClose={this.closeModal} closeIcon>
-          <SemanticModal.Header>Player Details</SemanticModal.Header>
-          <SemanticModal.Content image>
-            <SemanticImage wrapped size='medium' src={`https://ninjaba.herokuapp.com/images/headshots/players/${this.state.selectedPlayer.image}`}
-              onError={(e)=>{e.target.src=unknown}} />
-            <SemanticModal.Description>
-              <SemanticHeader>{this.state.selectedPlayer.player}</SemanticHeader>
-              <Table celled>
-                <Table.Body>
-                  <Table.Row>
-                    <Table.Cell>Team</Table.Cell>
-                    <Table.Cell>{this.state.selectedPlayer.tm}</Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table>
-            </SemanticModal.Description>
-          </SemanticModal.Content>
-          {this.getFooter()}
-        </SemanticModal>
-      );}
+        return (
+          <SemanticModal open={this.state.tradeModal} onClose={this.closeTradeModal} closeIcon>
+            <SemanticModal.Header>Player Details</SemanticModal.Header>
+            <SemanticModal.Content image>
+              <SemanticImage wrapped size='medium' src={`https://ninjaba.herokuapp.com/images/headshots/players/${this.state.selectedPlayer.image}`}
+                onError={(e)=>{e.target.src=unknown}} />
+              <SemanticModal.Description>
+                <SemanticHeader>{this.state.selectedPlayer.player}</SemanticHeader>
+                <Table celled>
+                  <Table.Body>
+                    <Table.Row>
+                      <Table.Cell>Team</Table.Cell>
+                      <Table.Cell>{this.state.selectedPlayer.tm}</Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table>
+              </SemanticModal.Description>
+            </SemanticModal.Content>
+            {this.getFooter()}
+          </SemanticModal>
+        );
+      }
+    }
+
+    openWaiverDropModal() {
+      if (this.state.selectedPlayer && this.props.waiverPlayersToDrop.length > 0) {
+        let players = this.props.waiverPlayersToDrop;
+
+        let dropList = players.map((player, index) => {
+          return (
+            <SemanticList.Item key={player._id}>
+              <SemanticList.Content>
+                <SemanticList.Header>
+                  <SemanticButton icon onClick={()=>{this.setState({ waiverDropPlayerId:player._id, waiverDropPlayer:player.player });}}>
+                    <Icon name='minus' size='large' verticalAlign='middle' />
+                  </SemanticButton>
+                  {player.player}
+                </SemanticList.Header>
+              </SemanticList.Content>
+            </SemanticList.Item>
+          );
+        });
+        return (
+          <SemanticModal open={this.state.waiverDropModal} onClose={this.closeWaiverDropModal} closeIcon>
+            <SemanticModal.Header>Select Player to Drop for Waiver</SemanticModal.Header>
+            <SemanticModal.Content>
+              <SemanticModal.Description>
+                <SemanticHeader>Player to be bid on</SemanticHeader>
+                <SemanticMessage
+                  color='green'
+                  icon='plus'
+                  header={this.state.selectedPlayer.player}
+                  content={this.state.bid}
+                />
+                {this.state.waiverDropPlayer && <div>
+                <SemanticHeader>Player to be dropped for</SemanticHeader>
+                <SemanticMessage
+                  color='orange'
+                  icon='minus'
+                  header={this.state.waiverDropPlayer}
+                  content={this.state.bid}
+                /></div>}
+                <SemanticHeader>Your Players</SemanticHeader>
+                <SemanticList divided relaxed>
+                  {dropList}
+                </SemanticList>
+              </SemanticModal.Description>
+            </SemanticModal.Content>
+            <SemanticModal.Actions>
+              <SemanticButton onClick={() => this.closeWaiverDropModal()}>
+                <Icon name="cancel"/>Cancel
+              </SemanticButton>
+              <SemanticButton primary onClick={() => this.addWaiver(this.state.selectedPlayer._id, this.state.waiverDropPlayerId, this.state.bid)}>
+                <Icon name="checkmark"/>Place Waiver
+              </SemanticButton>
+            </SemanticModal.Actions>
+          </SemanticModal>
+        );
+      }
     }
 
     renderMessage() {
@@ -181,7 +256,7 @@ class PlayerList extends Component {
     }
 
     renderAlert() {
-      if(this.props.playersTransactionErrored || this.props.waiverAddSuccess) {
+      if(this.props.playersTransactionErrored || this.props.waiverAddErrored) {
         return (
           <Message negative>
             <Message.Header>Error!</Message.Header>
@@ -237,7 +312,8 @@ class PlayerList extends Component {
 
         return (
           <div style={{'margin-top': '30px'}}>
-            {this.openModal()}
+            {this.openTradeModal()}
+            {this.openWaiverDropModal()}
             {this.renderAlert()}
     				{this.renderMessage()}
             <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
@@ -270,8 +346,6 @@ PlayerList.propTypes = {
     playersIsLoading: PropTypes.bool.isRequired,
     playersTransactionSuccess: PropTypes.bool.isRequired,
     playersTransactionErrored: PropTypes.bool.isRequired,
-    waiverAddSuccess: PropTypes.string.isRequired,
-    waiverAddErrored: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => {
@@ -282,8 +356,9 @@ const mapStateToProps = (state) => {
         playersIsLoading: state.playersIsLoading,
         playersTransactionSuccess: state.playersTransactionSuccess,
         playersTransactionErrored: state.playersTransactionErrored,
-        waiverAddSuccess: state.waiverAddSuccess,
-        waiverAddErrored: state.waiverAddErrored
+        waiverAddSuccess: state.waiver.waiverAddSuccess,
+        waiverAddErrored: state.waiver.waiverAddErrored,
+        waiverPlayersToDrop: state.waiver.waiverPlayersToDrop
     };
 };
 
@@ -291,7 +366,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchData: () => dispatch(playersFetchData()),
         playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType)),
-        addWaiver: ({ email, playerId, bid }) => dispatch(waiverActions.addWaiver({ email, playerId, bid }))
+        addWaiver: ({ email, addPlayerId, dropPlayerId, bid }) => dispatch(waiverActions.addWaiver({ email, addPlayerId, dropPlayerId, bid })),
+        getPlayersToDrop: ({ email }) => dispatch(waiverActions.getPlayersToDrop({ email }))
     };
 };
 

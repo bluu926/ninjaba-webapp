@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const waiveeSchema = new Schema({
   userId: String,
   waiverId: String,
-  playerId: String,
+  addPlayerId: String,
+  dropPlayerId: String,
   status: String,
   bid: Number,
   rank: Number
