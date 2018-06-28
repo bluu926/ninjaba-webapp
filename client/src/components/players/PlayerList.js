@@ -8,7 +8,7 @@ import { Dropdown } from 'primereact/components/dropdown/Dropdown';
 import { InputText } from 'primereact/components/inputtext/InputText';
 import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
-import { Button as SemanticButton, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
+import { Button as SemanticButton, Input as SemanticInput, Header as SemanticHeader, Image as SemanticImage, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Message, Table } from 'semantic-ui-react';
 import { playersFetchData, playersTransaction } from '../../actions/players';
 import * as waiverActions from '../../actions/waivers';
@@ -30,7 +30,8 @@ class PlayerList extends Component {
         this.state = {
           team: null,
           cols: playerListColumnsDefault,
-          rows: 25
+          rows: 25,
+          bid: 0
         };
 
         this.colOptions = [];
@@ -73,9 +74,21 @@ class PlayerList extends Component {
       this.dt.exportCSV();
     }
 
+    handleBidChange = e => {
+      this.setState({ bid: e.target.value });
+    }
+
+    addWaiver(playerId) {
+      // alert(playerId + ' ' + this.state.bid + ' '+ this.props.userEmailAddress);
+      this.props.addWaiver({
+        email: this.props.userEmailAddress,
+        playerId,
+        bid: this.state.bid
+      });
+    }
+
     addPlayer(player) {
-      // this.props.playersTransaction(player._id,this.props.userEmailAddress,'add');
-      this.props.addWaiver({ email: this.props.userEmailAddress, playerId: player._id, bid: 50 })
+      this.props.playersTransaction(player._id,this.props.userEmailAddress,'add');
 
       this.setState({
         open:false
@@ -98,9 +111,13 @@ class PlayerList extends Component {
               <SemanticButton onClick={() => this.closeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
-              <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
-                <Icon name="checkmark"/>Add
+              <SemanticInput onChange={this.handleBidChange} icon='money bill alternate outline' iconPosition='left' placeholder='Bid' />
+              <SemanticButton primary onClick={() => this.addWaiver(this.state.selectedPlayer._id)}>
+                <Icon name="checkmark"/>Bid
               </SemanticButton>
+              {/* <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+                <Icon name="checkmark"/>Add
+              </SemanticButton> */}
             </SemanticModal.Actions>
           );
         } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {
@@ -152,22 +169,24 @@ class PlayerList extends Component {
     }
 
     renderMessage() {
-      if(this.props.playersTransactionSuccess) {
+      if(this.props.playersTransactionSuccess || this.props.waiverAddSuccess) {
           return (
             <Message positive>
               <Message.Header>Success!</Message.Header>
-              <p>Your transaction was a success!</p>
+              <p>{this.props.playersTransactionSuccess}</p>
+              <p>{this.props.waiverAddSuccess}</p>
             </Message>
           );
       }
     }
 
     renderAlert() {
-      if(this.props.playersTransactionErrored) {
+      if(this.props.playersTransactionErrored || this.props.waiverAddSuccess) {
         return (
           <Message negative>
             <Message.Header>Error!</Message.Header>
-            <p>Your transaction has failed.</p>
+            <p>{this.props.playersTransactionErrored}</p>
+            <p>{this.props.waiverAddErrored}</p>
           </Message>
         );
       }
@@ -251,6 +270,8 @@ PlayerList.propTypes = {
     playersIsLoading: PropTypes.bool.isRequired,
     playersTransactionSuccess: PropTypes.bool.isRequired,
     playersTransactionErrored: PropTypes.bool.isRequired,
+    waiverAddSuccess: PropTypes.string.isRequired,
+    waiverAddErrored: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => {
@@ -268,9 +289,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: (url) => dispatch(playersFetchData()),
+        fetchData: () => dispatch(playersFetchData()),
         playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType)),
-        addWaiver: (email, playerId, bid) => dispatch(waiverActions.addWaiver(email, playerId, bid))
+        addWaiver: ({ email, playerId, bid }) => dispatch(waiverActions.addWaiver({ email, playerId, bid }))
     };
 };
 

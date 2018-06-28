@@ -37,7 +37,7 @@ export function playersTransactionErrored(bool) {
   };
 }
 
-export const playersFetchData = (url) => async dispatch => {
+export const playersFetchData = () => async dispatch => {
   try {
     dispatch(playersIsLoading(true));
     const response = await axios.get(`${config.API_URL}/players`, {headers: {

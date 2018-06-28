@@ -7,8 +7,8 @@ import {
 } from "semantic-ui-react";
 
 const leftItems = [
-  { as: "a", content: "Home", key: "home" },
-  { as: "a", content: "Users", key: "users" }
+  { as: NavLink, content: "Sign Up", to: "/signup" },
+  { as: NavLink, content: "Sign In", to: "/signin" }
 ];
 const rightItems = [
   { as: "a", content: "Login", key: "login" },
@@ -29,7 +29,7 @@ class App extends Component {
   handleToggle = () => this.setState({ visible: !this.state.visible });
 
   render() {
-    const { children, leftItems, rightItems } = this.props;
+    const { children } = this.props;
     const { visible } = this.state;
 
     return (
