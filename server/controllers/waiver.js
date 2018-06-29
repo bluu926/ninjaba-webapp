@@ -79,6 +79,22 @@ exports.addWaiver = function(req, res, next) {
   });
 }
 
+exports.test = function(req, res, next) {
+  // get current 'Active' status from waiver collection
+
+  Waiver.findOne({ active: true }, function(err, waiver) {
+    if (err) { return next(err); }
+
+    Waiver.find({ status: 'Active' }).sort({ bid: -1 })
+      .cursor()
+      .eachAsync(waivees => {
+        console.log('hi')
+      })
+      .then(() => console.log('done!'));
+  });
+}
+
+
 exports.processWaiver = function(req, res, next) {
   // get current 'Active' status from waiver collection
   Waiver.findOne({ active: true }, function(err, waiver) {
@@ -87,20 +103,38 @@ exports.processWaiver = function(req, res, next) {
     // get all 'Active' status bids from waivee collection
     // AND all bids from the 'Active' waiver
     // also put all the Bids is order from highest to lowest
-    Waivee.find({ status: 'Active' }, function(err, waivee) {
+    Waivee.find({ status: 'Active' }).sort({ bid: -1 }).exec( function(err, waivees) {
       if (err) { return next(err); }
 
+      // process all waivee
+      // Take the player current highest active bid (same players with same dont matter since its priority will be taken care of later)
+      waivees.forEach(function(waivee){
+        console.log("******" + waivee.bid);
+        // see if the next waivee is still 'Active'.
+        Waivee.findById(waivee._id, function(err, currentWaivee) {
+          if (err) { return next(err); }
+
+          console.log("******" + waivee.bid);
+
+          if (currentWaivee.status == 'Active') {
+
+            Waivee.find({ waiverId: waivee.waiverId, status: 'Active', bid: waivee.bid, addPlayerId: waivee.addPlayerId }).sort({ rank: 1 }).exec( function(err, waiveeGroup) {
+              if (err) { return next(err); }
+
+              console.log("*****");
+              waiveeGroup.forEach(function(processGroup) {
+                console.log(processGroup.bid + ' ' + processGroup.rank);
+              })
+
+            });
+          }
+
+        });
+
+      });
 
     });
   });
-  // get all 'Active' status bids from waivee collection
-  // AND all bids from the 'Active' waiver
-  // also put all the Bids is order from highest to lowest
-
-
-  // process all waivee
-  // Take the player current highest active bid (same players with same dont matter since its priority will be taken care of later)
-
 
   // If there are no ties of bids for this player, the owner of the bid has won
   // Note: This applies everytime a bid has been won

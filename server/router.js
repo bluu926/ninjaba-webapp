@@ -22,6 +22,6 @@ module.exports = function(app) {
   app.post('/api/waiver/addWaiver', Waiver.addWaiver);
   app.post('/api/waiver/getPlayersToDrop', Waiver.getPlayersToDrop);
   // app.get('/players',  Player.getPlayers);
-
-  // app.get('/email', mailService.sendmail);
+  app.post('/api/waiver/processwaivers', Waiver.processWaiver);
+  app.post('/api/waiver/test', Waiver.test);
 }
