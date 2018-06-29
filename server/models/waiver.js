@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Define user model
 const waiverSchema = new Schema({
   waiverNumber: Number,
-  status: String,
+  active: Boolean,
   activityLog: [{
     owner: String,
     player: String,
