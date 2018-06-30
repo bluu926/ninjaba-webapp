@@ -6,7 +6,9 @@ const waiveeSchema = new Schema({
   userId: String,
   waiverId: String,
   addPlayerId: String,
+  addPlayerName: String,
   dropPlayerId: String,
+  dropPlayerName: String,
   status: String,
   bid: Number,
   rank: Number

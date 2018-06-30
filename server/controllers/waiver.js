@@ -57,7 +57,9 @@ exports.addWaiver = function(req, res, next) {
               userId: user._id,
               waiverId: waiver._id,
               addPlayerId: addPlayerId,
+              addPlayerName: addPlayer.player,
               dropPlayerId: dropPlayerId,
+              dropPlayerName: dropPlayer.name,
               status: 'Active',
               bid: bid,
               rank: numOfSameBids + 1

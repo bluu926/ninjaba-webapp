@@ -1,0 +1,57 @@
+[
+  {
+    "userId": "1",
+    "waiverId": "1",
+    "addPlayerId": "addPlayerId",
+    "addPlayerName": "Steph",
+    "dropPlayerId": "dropPlayerId",
+    "dropPlayerName": "Trash",
+    "status": "Active",
+    "bid": 50,
+    "rank": 1
+  },
+  {
+    "userId": "1",
+    "waiverId": "1",
+    "addPlayerId": "addPlayerId",
+    "addPlayerName": "Klay",
+    "dropPlayerId": "dropPlayerId",
+    "dropPlayerName": "Trash",
+    "status": "Active",
+    "bid": 50,
+    "rank": 2
+  },
+  {
+    "userId": "1",
+    "waiverId": "1",
+    "addPlayerId": "addPlayerId",
+    "addPlayerName": "Dray",
+    "dropPlayerId": "dropPlayerId",
+    "dropPlayerName": "Trash",
+    "status": "Active",
+    "bid": 50,
+    "rank": 3
+  },
+  {
+    "userId": "1",
+    "waiverId": "1",
+    "addPlayerId": "addPlayerId",
+    "addPlayerName": "Iggy",
+    "dropPlayerId": "dropPlayerId",
+    "dropPlayerName": "Trash",
+    "status": "Active",
+    "bid": 25,
+    "rank": 1
+  },
+  {
+    "userId": "1",
+    "waiverId": "1",
+    "addPlayerId": "addPlayerId",
+    "addPlayerName": "KD",
+    "dropPlayerId": "dropPlayerId",
+    "dropPlayerName": "Trash",
+    "status": "Active",
+    "bid": 80,
+    "rank": 1
+  }
+]

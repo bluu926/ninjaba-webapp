@@ -1,5 +1,6 @@
 const Authentication = require('./controllers/authentication');
 const Player = require('./controllers/player');
+const Waivee = require('./controllers/waivee');
 const Waiver = require('./controllers/waiver');
 const passportService = require('./services/passport');
 const passport = require('passport');
@@ -24,4 +25,6 @@ module.exports = function(app) {
   // app.get('/players',  Player.getPlayers);
   app.post('/api/waiver/processwaivers', Waiver.processWaiver);
   app.post('/api/waiver/test', Waiver.test);
+
+  app.post('/api/waivee/getOwnerWaivees', Waivee.getOwnerWaivees);
 }

@@ -1,18 +1,20 @@
+import _ from "lodash";
 import React, { Component } from 'react';
 // import Header from './Header';
-import HeaderBar from './HeaderBar';
 import { NavLink } from 'react-router-dom';
 import {
   Container, Icon, Image, Menu, Sidebar, Responsive
 } from "semantic-ui-react";
 
-const leftItems = [
-  { as: NavLink, content: "Sign Up", to: "/signup" },
-  { as: NavLink, content: "Sign In", to: "/signin" }
+let leftItems = [
+  { as: NavLink, exact: true, content: "Home", to: "/" },
+  { as: NavLink, exact: true, content: "Dashboard", to: "/dashboard" },
+  { as: NavLink, exact: true, content: "Player", to: "/players" }
 ];
-const rightItems = [
-  { as: "a", content: "Login", key: "login" },
-  { as: "a", content: "Register", key: "register" }
+let rightItems = [
+  { as: NavLink, exact: true, content: "Register", to: "/signup" },
+  { as: NavLink, exact: true, content: "Sign In", to: "/signin" },
+  { as: NavLink, exact: true, content: "Sign out", to: "/signout" }
 ];
 
 class App extends Component {
@@ -35,7 +37,6 @@ class App extends Component {
     return (
       <div>
         {/* <Header/> */}
-        {/* <HeaderBar/> */}
         <Responsive {...Responsive.onlyMobile}>
           <Sidebar.Pushable>
           <Sidebar
@@ -60,9 +61,7 @@ class App extends Component {
                 <Icon name="sidebar" />
               </Menu.Item>
               <Menu.Menu position="right">
-                <Menu.Item as={NavLink} exact to='/signup' content='Sign Up' />
-                <Menu.Item as={NavLink} exact to='/signin' content='Sign In' />
-                <Menu.Item as={NavLink} exact to='/signout' content='Sign Out' />
+                {_.map(rightItems, item => <Menu.Item {...item} />)}
               </Menu.Menu>
             </Menu>
             <Container style={{ marginTop: "5em" }}>{children}</Container>
@@ -74,15 +73,9 @@ class App extends Component {
             <Menu.Item>
               <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
             </Menu.Item>
-            <Menu.Item as={NavLink} exact to='/signup' content='Sign Up' />
-            <Menu.Item as={NavLink} exact to='/signin' content='Sign In' />
-            <Menu.Item as={NavLink} exact to='/signout' content='Sign Out' />
-            <Menu.Item as={NavLink} exact to='/players' content='Players' />
+            {_.map(leftItems, item => <Menu.Item {...item} />)}
             <Menu.Menu position="right">
-              <Menu.Item as={NavLink} exact to='/signup' content='Sign Up' />
-              <Menu.Item as={NavLink} exact to='/signin' content='Sign In' />
-              <Menu.Item as={NavLink} exact to='/signout' content='Sign Out' />
-              <Menu.Item as={NavLink} exact to='/players' content='Players' />
+              {_.map(rightItems, item => <Menu.Item {...item} />)}
             </Menu.Menu>
           </Menu>
           <Container style={{ marginTop: "5em" }}>{children}</Container>
