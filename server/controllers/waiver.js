@@ -54,7 +54,7 @@ exports.addWaiver = function(req, res, next) {
           if (err) { return next(err); }
 
           console.log(waiver);
-          Waivee.find({ userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
+          Waivee.find({ status: 'Active', userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
 
             let waivee = new Waivee({
               userId: user._id,
