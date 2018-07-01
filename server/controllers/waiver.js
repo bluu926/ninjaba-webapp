@@ -27,7 +27,12 @@ exports.addWaiver = function(req, res, next) {
   const userEmail = req.body.email;
   const addPlayerId = req.body.addPlayerId;
   const dropPlayerId = req.body.dropPlayerId;
-  const bid = req.body.bid;
+  let bid = req.body.bid;
+
+  if(!bid) {
+    console.log("somehow bid came in null, set to 0");
+    bid = 0;
+  }
 
   User.findOne({ email: userEmail }, function(err, user) {
     if (err) { return next(err); }
@@ -349,8 +354,12 @@ async function processWinner(waivee) {
   console.log("Cancelling all bids that cant be covered by faab");
 
   // cancel all waives that have the same addPlayerId
+  await Waivee.update({ status: "Active", userId: owner._id, waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }, { status: "Cancelled" }, {multi: true});
+  console.log("Cancelling all owner bids that have the same addPlayerId as the winner");
+
+  // cancel all waives that have the same addPlayerId
   await Waivee.update({ status: "Active", waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }, { status: "Lost" }, {multi: true});
-  console.log("Losing all bids that have the same addPlayerId as the winner");
+  console.log("Losing all otherbids that have the same addPlayerId as the winner");
 
   // reorder ranks
 // await Waivee.update({}, { status: 'Active'}, {multi: true});

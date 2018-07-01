@@ -13,8 +13,10 @@ const waiveeSchema = new Schema({
   bid: Number,
   rank: Number,
   originalRank: Number
+},
+{
+	timestamps: true
 });
-
 // Create model class
 const ModelClass = mongoose.model('waivee', waiveeSchema);
 

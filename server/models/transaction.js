@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const TransactionSchema = new Schema({
 	username: {
-    type: String,
-	required: true
+	  type: String,
+		required: true
 	},
 	transactionType: {
 		type: String,
