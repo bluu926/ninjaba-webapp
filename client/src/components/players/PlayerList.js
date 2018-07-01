@@ -327,10 +327,10 @@ class PlayerList extends Component {
         let paginatorLeft = <Button icon="pi pi-refresh" onClick={this.reset}/>;
         let paginatorRight = <Button icon="fa fa-cloud-upload"/>;
 
-        let teamFilter = <Dropdown style={{width: '100%'}} className="ui-column-filter"
+        let teamFilter = <Dropdown readonly="true" style={{width: '100%'}} className="ui-column-filter"
                 value={this.state.team} options={playerTeam} onChange={this.onTeamChange}/>
 
-        let ownerFilter = <Dropdown style={{width: '100%'}} className="ui-column-filter"
+        let ownerFilter = <Dropdown readonly="true" style={{width: '100%'}} className="ui-column-filter"
                 value={this.state.owner} options={owner} onChange={this.onOwnerChange}/>
 
         let columns = this.state.cols.map((col,i) => {
