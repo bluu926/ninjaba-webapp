@@ -227,8 +227,18 @@ exports.processWaiver = async function(req, res, next) {
               break;
             }
         }
+        // end
 
-        
+        // reorder waiver priority
+        await User.findOneAndUpdate({ _id: highestPriority }, { waiverPriority: 13});
+        const waiverPriorityUserGroup = await Waivee.find({ userId: sameOwnerReorderGroup, waiverId: currentWaivee.waiverId, status: 'Active', bid: currentWaivee.bid, addPlayerId: currentWaivee.addPlayerId }).sort({ rank: 1 });
+
+        for (let i = 1; i < sameOwnerBidGroup.length + 1; i++) {
+          console.log("before update #: " + i + " sameOwnerBidGroup[i-1]: " + sameOwnerBidGroup[i-1]._id + " rank: " + sameOwnerBidGroup[i-1].rank);
+          if (sameOwnerBidGroup[i-1].rank != i) {
+            await Waivee.findOneAndUpdate({ _id: sameOwnerBidGroup[i-1]._id }, { rank: i });
+            console.log("updating rank !");
+          }
 
       } else {
         console.log("only 1 rank 1 for this bid");
