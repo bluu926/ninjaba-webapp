@@ -26,6 +26,7 @@ export const getPlayersToDrop = (waiverProps, callback) => async dispatch => {
 
     dispatch({ type: WAIVER_ADD_SUCCESS, payload: response.data.message });
   } catch(e) {
+    console.log(e.response.data);
     dispatch({ type: WAIVER_ADD_ERRORED, payload: e.response.data.error });
   }
 };

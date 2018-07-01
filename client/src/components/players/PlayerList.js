@@ -18,6 +18,7 @@ import requireAuth from '../requireAuth';
 import playerTeam from '../../data/playerTeam.json';
 import playerListColumnsDefault from '../../data/playerListColumnsDefault.json';
 import playerListColumns from '../../data/playerListColumns.json';
+import owner from '../../data/owners.json';
 
 import unknown from '../../images/avatars/players/unknown.png';
 import 'primereact/resources/primereact.min.css';
@@ -29,6 +30,7 @@ class PlayerList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+          owner: null,
           team: null,
           cols: playerListColumnsDefault,
           rows: 25,
@@ -42,6 +44,7 @@ class PlayerList extends Component {
 
         this.onPlayerSelect = this.onPlayerSelect.bind(this);
         this.onTeamChange = this.onTeamChange.bind(this);
+        this.onOwnerChange = this.onOwnerChange.bind(this);
         this.onColumnToggle = this.onColumnToggle.bind(this);
     }
 
@@ -70,6 +73,11 @@ class PlayerList extends Component {
       });
     }
 
+    onOwnerChange(event) {
+      this.dt.filter(event.value, 'owner', 'equals');
+      this.setState({owner: event.value});
+    }
+
     onTeamChange(event) {
       this.dt.filter(event.value, 'tm', 'equals');
       this.setState({team: event.value});
@@ -88,12 +96,14 @@ class PlayerList extends Component {
     }
 
     waiverProceedToDrop(addPlayerId) {
-       this.props.getPlayersToDrop({ email: this.props.userEmailAddress });
+      this.props.getPlayersToDrop({ bid: this.state.bid, email: this.props.userEmailAddress });
 
-      this.setState({
-        tradeModal:false,
-        waiverDropModal:true
-      });
+      if (this.props.waiverAddErrored !== "") {
+        this.setState({
+          tradeModal:false,
+          waiverDropModal:true
+        });
+      }
     }
 
     addWaiver(addPlayerId, dropPlayerId, bid) {
@@ -128,13 +138,13 @@ class PlayerList extends Component {
               <SemanticButton onClick={() => this.closeTradeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
-              <SemanticInput onChange={this.handleBidChange} icon='money bill alternate outline' iconPosition='left' placeholder='Bid' />
+              <SemanticInput onChange={this.handleBidChange} icon='money bill alternate outline' iconPosition='left' placeholder='0' />
               <SemanticButton primary onClick={() => this.waiverProceedToDrop(this.state.selectedPlayer._id)}>
                 Bid<Icon name="arrow right"/>
               </SemanticButton>
-              {/* <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+              <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
                 <Icon name="checkmark"/>Add
-              </SemanticButton> */}
+              </SemanticButton>
             </SemanticModal.Actions>
           );
         } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {
@@ -169,6 +179,12 @@ class PlayerList extends Component {
               <SemanticImage wrapped size='medium' src={`https://ninjaba.herokuapp.com/images/headshots/players/${this.state.selectedPlayer.image}`}
                 onError={(e)=>{e.target.src=unknown}} />
               <SemanticModal.Description>
+                {this.props.waiverAddErrored &&
+                <Message negative>
+                  <Message.Header>Error!</Message.Header>
+                  <p>{this.props.playersTransactionErrored}</p>
+                  <p>{this.props.waiverAddErrored}</p>
+                </Message>}
                 <SemanticHeader>{this.state.selectedPlayer.player}</SemanticHeader>
                 <Table celled>
                   <Table.Body>
@@ -187,7 +203,7 @@ class PlayerList extends Component {
     }
 
     openWaiverDropModal() {
-      if (this.state.selectedPlayer && this.props.waiverPlayersToDrop.length > 0) {
+      if (this.state.selectedPlayer) {
         let players = this.props.waiverPlayersToDrop;
 
         let dropList = players.map((player, index) => {
@@ -214,7 +230,7 @@ class PlayerList extends Component {
                   color='green'
                   icon='plus'
                   header={this.state.selectedPlayer.player}
-                  content={this.state.bid}
+                  content={"Place waiver for $" + this.state.bid}
                 />
                 {this.state.waiverDropPlayer && <div>
                 <SemanticHeader>Player to be dropped for</SemanticHeader>
@@ -222,11 +238,23 @@ class PlayerList extends Component {
                   color='orange'
                   icon='minus'
                   header={this.state.waiverDropPlayer}
-                  content={this.state.bid}
+                  content="Player to drop"
                 /></div>}
                 <SemanticHeader>Your Players</SemanticHeader>
                 <SemanticList divided relaxed>
                   {dropList}
+                  {this.props.waiverPlayersToDropCount < 18 &&
+                    <SemanticList.Item key='0'>
+                      <SemanticList.Content>
+                        <SemanticList.Header>
+                          <SemanticButton icon onClick={()=>{this.setState({ waiverDropPlayerId:"", waiverDropPlayer:"Drop No One", disablePlaceWaiver: true });}}>
+                            <Icon name='minus' size='large' verticalAlign='middle' />
+                          </SemanticButton>
+                          Drop No One
+                        </SemanticList.Header>
+                      </SemanticList.Content>
+                    </SemanticList.Item>
+                  }
                 </SemanticList>
               </SemanticModal.Description>
             </SemanticModal.Content>
@@ -234,7 +262,7 @@ class PlayerList extends Component {
               <SemanticButton onClick={() => this.closeWaiverDropModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
-              <SemanticButton primary onClick={() => this.addWaiver(this.state.selectedPlayer._id, this.state.waiverDropPlayerId, this.state.bid)}>
+              <SemanticButton primary disabled={!this.state.disablePlaceWaiver} onClick={() => this.addWaiver(this.state.selectedPlayer._id, this.state.waiverDropPlayerId, this.state.bid)}>
                 <Icon name="checkmark"/>Place Waiver
               </SemanticButton>
             </SemanticModal.Actions>
@@ -299,11 +327,18 @@ class PlayerList extends Component {
         let teamFilter = <Dropdown style={{width: '100%'}} className="ui-column-filter"
                 value={this.state.team} options={playerTeam} onChange={this.onTeamChange}/>
 
+        let ownerFilter = <Dropdown style={{width: '100%'}} className="ui-column-filter"
+                value={this.state.owner} options={owner} onChange={this.onOwnerChange}/>
+
         let columns = this.state.cols.map((col,i) => {
               if(col.filterElement === 'teamFilter') {
                 return <Column key={col.field} field={col.field} header={col.header}
                 sortable={true} filter={col.filter} filterMatchMode={col.filterMatchMode}
                 filterElement={teamFilter} />;
+              } else if (col.filterElement === 'ownerFilter') {
+                return <Column key={col.field} field={col.field} header={col.header}
+                sortable={true} filter={col.filter} filterMatchMode={col.filterMatchMode}
+                filterElement={ownerFilter} />;
               } else {
                 return <Column key={col.field} field={col.field} header={col.header}
                 sortable={true} filter={col.filter} filterMatchMode={col.filterMatchMode} />;
@@ -317,7 +352,7 @@ class PlayerList extends Component {
             {this.renderAlert()}
     				{this.renderMessage()}
             <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
-                  paginator={true} paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
+                  paginator={true}
                   rows={this.state.rows} selectionMode="single" rowsPerPageOptions={[10,25,50,100]} sortMode="multiple"
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
                   onRowSelect={this.onPlayerSelect} globalFilter={this.state.globalFilter}
@@ -358,7 +393,8 @@ const mapStateToProps = (state) => {
         playersTransactionErrored: state.playersTransactionErrored,
         waiverAddSuccess: state.waiver.waiverAddSuccess,
         waiverAddErrored: state.waiver.waiverAddErrored,
-        waiverPlayersToDrop: state.waiver.waiverPlayersToDrop
+        waiverPlayersToDrop: state.waiver.waiverPlayersToDrop,
+        waiverPlayersToDropCount: state.waiver.waiverPlayersToDropCount
     };
 };
 
@@ -367,7 +403,7 @@ const mapDispatchToProps = (dispatch) => {
         fetchData: () => dispatch(playersFetchData()),
         playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType)),
         addWaiver: ({ email, addPlayerId, dropPlayerId, bid }) => dispatch(waiverActions.addWaiver({ email, addPlayerId, dropPlayerId, bid })),
-        getPlayersToDrop: ({ email }) => dispatch(waiverActions.getPlayersToDrop({ email }))
+        getPlayersToDrop: ({ bid, email }) => dispatch(waiverActions.getPlayersToDrop({ bid, email }))
     };
 };
 

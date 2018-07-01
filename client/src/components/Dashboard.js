@@ -34,7 +34,7 @@ class Dashboard extends Component {
               <Button icon>
                 <Icon name='arrow up' size='large' verticalAlign='middle' />
               </Button>
-              {waivee.addPlayerName}
+              {waivee.addPlayerId}
             </List.Header>
           </List.Content>
         </List.Item>
@@ -63,6 +63,7 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
     return {
         authenticated: state.auth.authenticated,
+        userEmailAddress: state.auth.userEmailAddress,
         waiveeListSuccess: state.waivee.waiveeListSuccess,
         waiveeListErrored: state.waivee.waiveeListErrored,
         waiveePlayersList: state.waivee.waiveePlayersList

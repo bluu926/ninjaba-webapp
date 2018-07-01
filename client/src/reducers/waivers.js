@@ -3,7 +3,7 @@ import { WAIVER_ADD_SUCCESS, WAIVER_ADD_ERRORED, WAIVER_OWNER_DROPS } from '../a
 const INITIAL_STATE = {
   waiverAddSuccess: '',
   waiverAddErrored: '',
-  waiverPlayersToDrop: '',
+  waiverPlayersToDrop: [],
   waiverPlayersToDropCount: 0
 }
 

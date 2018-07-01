@@ -17,10 +17,11 @@ exports.getOwnerWaivees = function(req, res, next) {
 
       Waivee.find({ userId: user._id, status: 'Active', waiverId: waiver._id }).sort({ bid: -1 }).exec( function(err, waivees) {
         if (err) { return next(err); }
-
-        res.send({ wavieeList: waivees });
+        
+        res.send({ waiveeList: waivees });
       });
     });
   });
+
   // res.send({ waiveeList: testData });
 }

@@ -11,7 +11,8 @@ const waiveeSchema = new Schema({
   dropPlayerName: String,
   status: String,
   bid: Number,
-  rank: Number
+  rank: Number,
+  originalRank: Number
 });
 
 // Create model class

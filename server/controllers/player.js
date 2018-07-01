@@ -17,7 +17,7 @@ exports.getPlayers = function (req, res, next) {
 exports.addPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = req.params.transactionType;
+  const transactionType = 'add';
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -48,11 +48,11 @@ exports.addPlayer = function(req, res, next) {
 				}
 
         // Save TRANSACTION
-        let error = recordTransaction(username, transactionType, foundPlayer.player);
-        if (error) {
-          console.log('****** TRANSACTION ERROR ******');
-          return res.status(422).json({ error: 'Unable to save transaction.' });
-        }
+        recordTransaction(username, transactionType, foundPlayer.player);
+        // if (error) {
+        //   console.log('****** TRANSACTION ERROR ******');
+        //   return res.status(422).json({ error: 'Unable to save transaction.' });
+        // }
 
 				return res.status(200).json({
 	        message: 'Player successfully added'
@@ -65,7 +65,7 @@ exports.addPlayer = function(req, res, next) {
 exports.dropPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = req.params.transactionType;
+  const transactionType = 'drop';
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -85,11 +85,11 @@ exports.dropPlayer = function(req, res, next) {
 			}
 
       // Save TRANSACTION
-      let error = recordTransaction(username, transactionType, foundPlayer.player);
-      if (error) {
-        console.log('****** TRANSACTION ERROR ******');
-        return res.status(422).json({ error: 'Unable to save transaction.' });
-      }
+      recordTransaction(username, transactionType, foundPlayer.player);
+      // if (error) {
+      //   console.log('****** TRANSACTION ERROR ******');
+      //   return res.status(422).json({ error: 'Unable to save transaction.' });
+      // }
 
 			return res.status(200).json({
         message: 'Player successfully dropped'
