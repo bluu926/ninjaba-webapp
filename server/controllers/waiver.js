@@ -43,15 +43,7 @@ exports.addWaiver = function(req, res, next) {
   			return res.status(422).json({ error: 'Player is not available for waivers.' });
   		}
 
-      Player.findById(dropPlayerId, function(err, dropPlayer) {
-        if (err) {
-  				return res.status(422).json({ error: 'No player was found.' });
-  			}
-
-        if (dropPlayer.owner != userEmail) {
-    			return res.status(422).json({ error: 'Player is not on your team.' });
-    		}
-
+      if (dropPlayerId == "") {
         Waiver.findOne({ active: true }, function(err, waiver) {
           if (err) { return next(err); }
 
@@ -64,7 +56,7 @@ exports.addWaiver = function(req, res, next) {
               addPlayerId: addPlayerId,
               addPlayerName: addPlayer.player,
               dropPlayerId: dropPlayerId,
-              dropPlayerName: dropPlayer.player,
+              dropPlayerName: '',
               status: 'Active',
               bid: bid,
               rank: numOfSameBids + 1,
@@ -82,7 +74,49 @@ exports.addWaiver = function(req, res, next) {
             });
           });
         });
-      });
+      } else {
+        Player.findById(dropPlayerId, function(err, dropPlayer) {
+          if (err) {
+    				return res.status(422).json({ error: 'No player was found.' });
+    			}
+
+          if (dropPlayer.owner != userEmail) {
+      			return res.status(422).json({ error: 'Player is not on your team.' });
+      		}
+
+          Waiver.findOne({ active: true }, function(err, waiver) {
+            if (err) { return next(err); }
+
+            console.log(waiver);
+            Waivee.find({ userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
+
+              let waivee = new Waivee({
+                userId: user._id,
+                waiverId: waiver._id,
+                addPlayerId: addPlayerId,
+                addPlayerName: addPlayer.player,
+                dropPlayerId: dropPlayerId,
+                dropPlayerName: dropPlayer.player,
+                status: 'Active',
+                bid: bid,
+                rank: numOfSameBids + 1,
+                originalRank: numOfSameBids + 1
+              });
+
+              waivee.save(function(err, waivee) {
+                if (err) { return next(err); }
+
+                console.log('****** WAIVEE SAVED ******');
+                return res.status(200).json({
+                  message: 'Waiver Successfully placed'
+                });
+
+              });
+            });
+          });
+        });
+      }
+
     });
   });
 }
@@ -190,8 +224,11 @@ exports.processWaiver = async function(req, res, next) {
             if (waiveeGroup[i].userId == highestPriority) {
               console.log("found the winner with the highest waiver priority");
               await processWinner(waiveeGroup[i]);
+              break;
             }
         }
+
+        
 
       } else {
         console.log("only 1 rank 1 for this bid");

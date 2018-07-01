@@ -145,9 +145,9 @@ class PlayerList extends Component {
               <SemanticButton primary onClick={() => this.waiverProceedToDrop(this.state.selectedPlayer._id)}>
                 Bid<Icon name="arrow right"/>
               </SemanticButton>
-              {/* <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+              <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
                 <Icon name="checkmark"/>Add
-              </SemanticButton> */}
+              </SemanticButton>
             </SemanticModal.Actions>
           );
         } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {
