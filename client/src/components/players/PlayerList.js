@@ -141,13 +141,13 @@ class PlayerList extends Component {
               <SemanticButton onClick={() => this.closeTradeModal()}>
                 <Icon name="cancel"/>Cancel
               </SemanticButton>
-              <SemanticInput onChange={this.handleBidChange} icon='money bill alternate outline' iconPosition='left' placeholder='0' />
+              <SemanticInput type='number' min='0' onChange={this.handleBidChange} icon='money bill alternate outline' iconPosition='left' placeholder='0' />
               <SemanticButton primary onClick={() => this.waiverProceedToDrop(this.state.selectedPlayer._id)}>
                 Bid<Icon name="arrow right"/>
               </SemanticButton>
-              <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+              {/* <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
                 <Icon name="checkmark"/>Add
-              </SemanticButton>
+              </SemanticButton> */}
             </SemanticModal.Actions>
           );
         } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {

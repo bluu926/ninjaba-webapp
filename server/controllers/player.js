@@ -17,7 +17,7 @@ exports.getPlayers = function (req, res, next) {
 exports.addPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = req.params.transactionType;
+  const transactionType = 'add';
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -65,7 +65,7 @@ exports.addPlayer = function(req, res, next) {
 exports.dropPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = req.params.transactionType;
+  const transactionType = 'drop';
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {

@@ -162,7 +162,7 @@ exports.processWaiver = async function(req, res, next) {
   // get all 'Active' status bids from waivee collection
   // AND all bids from the 'Active' waiver
   // also put all the Bids is order from highest to lowest
-  const waivees = await Waivee.find({ status: 'Active' }).sort({ bid: -1 });
+  const waivees = await Waivee.find({ status: 'Active' }).sort({ bid: -1, rank: 1 });
 
   // process all waivee
   // Take the player current highest active bid (same players with same dont matter since its priority will be taken care of later)
@@ -227,18 +227,18 @@ exports.processWaiver = async function(req, res, next) {
               break;
             }
         }
-        // end
 
         // reorder waiver priority
         await User.findOneAndUpdate({ _id: highestPriority }, { waiverPriority: 13});
-        const waiverPriorityUserGroup = await Waivee.find({ userId: sameOwnerReorderGroup, waiverId: currentWaivee.waiverId, status: 'Active', bid: currentWaivee.bid, addPlayerId: currentWaivee.addPlayerId }).sort({ rank: 1 });
 
-        for (let i = 1; i < sameOwnerBidGroup.length + 1; i++) {
-          console.log("before update #: " + i + " sameOwnerBidGroup[i-1]: " + sameOwnerBidGroup[i-1]._id + " rank: " + sameOwnerBidGroup[i-1].rank);
-          if (sameOwnerBidGroup[i-1].rank != i) {
-            await Waivee.findOneAndUpdate({ _id: sameOwnerBidGroup[i-1]._id }, { rank: i });
-            console.log("updating rank !");
-          }
+        const waiverPriorityUserGroup = await User.find().sort({ waiverPriority: 1 });
+
+        for (let i = 1; i < waiverPriorityUserGroup.length + 1; i++) {
+          console.log("before update #: " + i + " waiverPriorityUserGroup[i-1]: " + waiverPriorityUserGroup[i-1].name + " priority: " + waiverPriorityUserGroup[i-1].waiverPriority);
+
+          await User.findOneAndUpdate({ _id: waiverPriorityUserGroup[i-1]._id }, { waiverPriority: i });
+          console.log("updating rank !");
+        }
 
       } else {
         console.log("only 1 rank 1 for this bid");
@@ -247,7 +247,7 @@ exports.processWaiver = async function(req, res, next) {
     }
   }
 
-  console.log("*****" + waiver);
+  res.send({ success: 'Complete!' });
 
   // If there are no ties of bids for this player, the owner of the bid has won
   // Note: This applies everytime a bid has been won
@@ -300,6 +300,7 @@ async function processWinner(waivee) {
 
   // add the player to the winner owner and set waivee to Won
   await Player.findOneAndUpdate({ _id: waivee.addPlayerId }, { owner: owner.email });
+  // await Player.findOneAndUpdate({ player: waivee.addPlayerName }, { owner: owner.email });
   console.log("updated and won! new faab is: " + owner.faab);
 
   await Waivee.findOneAndUpdate({ _id: waivee._id }, { status: "Won" });
@@ -315,8 +316,8 @@ async function processWinner(waivee) {
   const playerCount =  await Player.find({ owner: owner.email }).count();
   console.log("total players now: " + playerCount);
 
-  if (playerCount < 18) {
-    await Waivee.update({ dropPlayerId: "", status: "Active", waiverId: waivee.waiverId }, { status: "Cancelled" }, {multi: true});
+  if (playerCount > 17) {
+    await Waivee.update({ userId: owner._id, dropPlayerId: "", status: "Active", waiverId: waivee.waiverId }, { status: "Cancelled" }, {multi: true});
     console.log("Cancelling all dropless waivers");
   }
 

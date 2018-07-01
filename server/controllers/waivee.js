@@ -15,7 +15,7 @@ exports.getOwnerWaivees = function(req, res, next) {
     User.findOne({ email: email }, function(err, user) {
       if (err) { return next(err); }
 
-      Waivee.find({ userId: user._id, status: 'Active', waiverId: waiver._id }).sort({ bid: -1 }).exec( function(err, waivees) {
+      Waivee.find({ userId: user._id, status: 'Active', waiverId: waiver._id }).sort({ bid: -1, rank: 1 }).exec( function(err, waivees) {
         if (err) { return next(err); }
 
         res.send({ waiveeList: waivees });
@@ -39,7 +39,7 @@ exports.cancelWaivee = function(req, res, next) {
       User.findOne({ email: email }, function(err, user) {
         if (err) { return next(err); }
 
-        Waivee.find({ userId: user._id, status: 'Active', waiverId: waiver._id }).sort({ bid: -1 }).exec( function(err, waivees) {
+        Waivee.find({ userId: user._id, status: 'Active', waiverId: waiver._id }).sort({ bid: -1, rank: 1 }).exec( function(err, waivees) {
           if (err) { return next(err); }
 
           res.send({ waiveeList: waivees });
