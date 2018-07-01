@@ -321,7 +321,7 @@ async function processWinner(waivee) {
     let dropTransaction = new Transaction({
       username: owner.name,
       transactionType: 'waiver drop',
-      playerName: waivee.addPlayerName
+      playerName: waivee.dropPlayerName
     });
 
     await dropTransaction.save();
@@ -349,8 +349,8 @@ async function processWinner(waivee) {
   console.log("Cancelling all bids that cant be covered by faab");
 
   // cancel all waives that have the same addPlayerId
-  await Waivee.update({ status: "Active", waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }, { status: "Cancelled" }, {multi: true});
-  console.log("Cancelling all bids that have the same addPlayerId as the winner");
+  await Waivee.update({ status: "Active", waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }, { status: "Lost" }, {multi: true});
+  console.log("Losing all bids that have the same addPlayerId as the winner");
 
   // reorder ranks
 // await Waivee.update({}, { status: 'Active'}, {multi: true});
