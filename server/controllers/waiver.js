@@ -1,5 +1,6 @@
 const Player = require('../models/player');
 const User = require('../models/user');
+const Transaction = require('../models/transaction');
 const Waivee = require('../models/waivee');
 const Waiver = require('../models/waiver');
 
@@ -300,7 +301,15 @@ async function processWinner(waivee) {
 
   // add the player to the winner owner and set waivee to Won
   await Player.findOneAndUpdate({ _id: waivee.addPlayerId }, { owner: owner.email });
-  // await Player.findOneAndUpdate({ player: waivee.addPlayerName }, { owner: owner.email });
+
+  let transaction = new Transaction({
+    username: owner.name,
+    transactionType: 'waiver add',
+    playerName: waivee.addPlayerName
+  });
+
+  await transaction.save();
+
   console.log("updated and won! new faab is: " + owner.faab);
 
   await Waivee.findOneAndUpdate({ _id: waivee._id }, { status: "Won" });
@@ -308,6 +317,14 @@ async function processWinner(waivee) {
   // drop player specified in winning waiver if needed
   if (waivee.dropPlayerId !== "") {
     await Player.findOneAndUpdate({ _id: waivee.dropPlayerId }, { owner: "--Free Agent--"});
+
+    let dropTransaction = new Transaction({
+      username: owner.name,
+      transactionType: 'waiver drop',
+      playerName: waivee.addPlayerName
+    });
+
+    await dropTransaction.save();
   } else {
     console.log("empty dont delete");
   }
