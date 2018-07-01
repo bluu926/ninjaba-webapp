@@ -1,12 +1,10 @@
 [
     {"field": "player", "header": "Player", "filter": true, "filterMatchMode": "contains"},
-    {"field": "tm", "header": "Team", "filter": true, "filterMatchMode": "contains",  "filterElement": "teamFilter"},
+    {"field": "tm", "header": "Team", "filter": true, "filterElement": "teamFilter"},
     {"field": "ps/g", "header": "PPG"},
-    {"field": "2p", "header": "2pt Made"},
-    {"field": "3p", "header": "3pt Made"},
-    {"field": "trb", "header": "Total Rebounds"},
-    {"field": "ast", "header": "Assists"},
-    {"field": "stl", "header": "Steals"},
-    {"field": "blk", "header": "Blocks"},
-    {"field": "owner", "header": "Owner", "filter": true, "filterMatchMode": "contains", "filterElement": "ownerFilter"}
+    {"field": "trb", "header": "T Reb"},
+    {"field": "ast", "header": "Ast"},
+    {"field": "stl", "header": "Stl"},
+    {"field": "blk", "header": "Blk"},
+    {"field": "owner", "header": "Owner", "filter": true, "filterElement": "ownerFilter"}
 ]

@@ -50,7 +50,7 @@ class Dashboard extends Component {
         <div style={styles}>
           <Message info>
             <Message.Header>Thank you for signing up!</Message.Header>
-            <p>Player Transaction section will be available soon.</p>
+            <p>Trading will be availble soon.</p>
           </Message>
         </div>
         <Divider />

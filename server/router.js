@@ -20,12 +20,11 @@ module.exports = function(app) {
   app.get('/api/playertransaction/:playerId/:username/add', requireAuth, Player.addPlayer);
   app.get('/api/playertransaction/:playerId/:username/drop', requireAuth, Player.dropPlayer);
 
-  app.post('/api/waiver/addWaiver', Waiver.addWaiver);
-  app.post('/api/waiver/getPlayersToDrop', Waiver.getPlayersToDrop);
-  // app.get('/players',  Player.getPlayers);
-  app.post('/api/waiver/processwaivers', Waiver.processWaiver);
-  app.post('/api/waiver/test', Waiver.test);
+  app.post('/api/waiver/addWaiver', requireAuth, Waiver.addWaiver);
+  app.post('/api/waiver/getPlayersToDrop', requireAuth, Waiver.getPlayersToDrop);
 
-  app.post('/api/waivee/getOwnerWaivees', Waivee.getOwnerWaivees);
-  app.post('/api/waivee/cancelWaivee', Waivee.cancelWaivee);
+  app.post('/api/waiver/processwaivers', Waiver.processWaiver);
+
+  app.post('/api/waivee/getOwnerWaivees', requireAuth, Waivee.getOwnerWaivees);
+  app.post('/api/waivee/cancelWaivee', requireAuth, Waivee.cancelWaivee);
 }
