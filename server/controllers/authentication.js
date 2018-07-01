@@ -37,6 +37,7 @@ exports.signup = function (req, res, next) {
     const user = new User({
       email: email,
       name: name,
+      faab: 100,
       password: password
     });
 

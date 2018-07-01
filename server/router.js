@@ -27,4 +27,5 @@ module.exports = function(app) {
   app.post('/api/waiver/test', Waiver.test);
 
   app.post('/api/waivee/getOwnerWaivees', Waivee.getOwnerWaivees);
+  app.post('/api/waivee/cancelWaivee', Waivee.cancelWaivee);
 }

@@ -55,7 +55,7 @@ class App extends Component {
           >
             <Menu fixed="top" inverted>
               <Menu.Item>
-                <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
+                <Image size="mini" src="http://urbanballr.com/wp-content/uploads/2014/10/basketball-icon-blue.png" />
               </Menu.Item>
               <Menu.Item onClick={this.handleToggle}>
                 <Icon name="sidebar" />
@@ -71,7 +71,7 @@ class App extends Component {
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <Menu fixed="top" inverted>
             <Menu.Item>
-              <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
+              <Image size="mini" src="http://urbanballr.com/wp-content/uploads/2014/10/basketball-icon-blue.png" />
             </Menu.Item>
             {_.map(leftItems, item => <Menu.Item {...item} />)}
             <Menu.Menu position="right">

@@ -17,6 +17,10 @@ class Dashboard extends Component {
     this.props.getOwnerWaivees({ email: this.props.userEmailAddress });
   }
 
+  cancelWaivee(waiveeId) {
+    this.props.cancelWaivee({ email: this.props.userEmailAddress, waiveeId });
+  }
+
   render() {
     let waivees = this.props.waiveePlayersList;
 
@@ -25,7 +29,7 @@ class Dashboard extends Component {
         <List.Item key={waivee._id}>
           <List.Content>
             <List.Header>
-              <Button icon>
+              <Button icon onClick={() => this.cancelWaivee(waivee._id)}>
                 <Icon name='minus' size='large' verticalAlign='middle' />
               </Button>
               <Button icon>
@@ -34,7 +38,7 @@ class Dashboard extends Component {
               <Button icon>
                 <Icon name='arrow up' size='large' verticalAlign='middle' />
               </Button>
-              {waivee.addPlayerId}
+              Bidding <i>${waivee.bid}</i> to add <i>{waivee.addPlayerName}</i> to drop <i>{waivee.dropPlayerName}</i>.
             </List.Header>
           </List.Content>
         </List.Item>
@@ -72,7 +76,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getOwnerWaivees: ({ email }) => dispatch(waiveeActions.getOwnerWaivees({ email }))
+        getOwnerWaivees: ({ email }) => dispatch(waiveeActions.getOwnerWaivees({ email })),
+        cancelWaivee: ({ email, waiveeId }) => dispatch(waiveeActions.cancelWaivee({ email, waiveeId }))
     };
 };
 

@@ -34,7 +34,7 @@ ReactDOM.render(
       <App>
         <Route path="/" exact component={Home} />
         <Route path="/signin" component={Signin} />
-        <Route path="/signup" component={Signup} />
+        {/* <Route path="/signup" component={Signup} /> */}
         <Route path="/signout" component={Signout} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/players" component={PlayerList} />

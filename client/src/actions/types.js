@@ -1,4 +1,5 @@
 export const AUTH_USER = 'auth_user';
+export const AUTH_USER_FAAB = 'auth_user_bid';
 export const AUTH_USER_EMAIL = 'auth_user_email';
 export const AUTH_ERROR = 'auth_error';
 export const PLAYERS_FETCH_DATA_SUCCESS = 'players_fetch_data_success';
@@ -11,4 +12,5 @@ export const WAIVER_ADD_ERRORED = 'waiver_list_errored';
 export const WAIVER_OWNER_DROPS = 'waiver_owner_drops';
 export const WAIVEE_LIST_SUCCESS = 'waivee_list_success';
 export const WAIVEE_LIST_ERRORED = 'waivee_list_errored';
+export const WAIVEE_CANCEL = 'waivee_cancel';
 export const WAIVEE_PLAYERS_LIST = 'waivee_players_list';

@@ -5,7 +5,7 @@ const config = require('../config');
 const testData = require('../data/testPlayers.json')
 
 exports.getPlayers = function (req, res, next) {
-  Player.find(function(err, players) {
+  Player.find().sort({ player: 1 }).exec(function(err, players) {
 		if (err) { return next(err); }
 
 		res.send({ playerList: players });
@@ -17,7 +17,7 @@ exports.getPlayers = function (req, res, next) {
 exports.addPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = 'add';
+  const transactionType = req.params.transactionType;
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -48,11 +48,11 @@ exports.addPlayer = function(req, res, next) {
 				}
 
         // Save TRANSACTION
-        recordTransaction(username, transactionType, foundPlayer.player);
-        // if (error) {
-        //   console.log('****** TRANSACTION ERROR ******');
-        //   return res.status(422).json({ error: 'Unable to save transaction.' });
-        // }
+        let error = recordTransaction(username, transactionType, foundPlayer.player);
+        if (error) {
+          console.log('****** TRANSACTION ERROR ******');
+          return res.status(422).json({ error: 'Unable to save transaction.' });
+        }
 
 				return res.status(200).json({
 	        message: 'Player successfully added'
@@ -65,7 +65,7 @@ exports.addPlayer = function(req, res, next) {
 exports.dropPlayer = function(req, res, next) {
 	const playerId = req.params.playerId;
 	const username = req.params.username;
-  const transactionType = 'drop';
+  const transactionType = req.params.transactionType;
 
 	Player.findById(playerId, (err, foundPlayer) => {
 		if (err) {
@@ -85,11 +85,11 @@ exports.dropPlayer = function(req, res, next) {
 			}
 
       // Save TRANSACTION
-      recordTransaction(username, transactionType, foundPlayer.player);
-      // if (error) {
-      //   console.log('****** TRANSACTION ERROR ******');
-      //   return res.status(422).json({ error: 'Unable to save transaction.' });
-      // }
+      let error = recordTransaction(username, transactionType, foundPlayer.player);
+      if (error) {
+        console.log('****** TRANSACTION ERROR ******');
+        return res.status(422).json({ error: 'Unable to save transaction.' });
+      }
 
 			return res.status(200).json({
         message: 'Player successfully dropped'

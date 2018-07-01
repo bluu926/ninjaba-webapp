@@ -69,7 +69,10 @@ class PlayerList extends Component {
     closeWaiverDropModal = () => {
       this.setState({
         waiverDropModal:false,
-        bid: 0
+        bid: 0,
+        waiverDropPlayerId:"",
+        waiverDropPlayer:"",
+        disablePlaceWaiver: false
       });
     }
 
@@ -95,10 +98,10 @@ class PlayerList extends Component {
       this.setState({ bid: e.target.value });
     }
 
-    waiverProceedToDrop(addPlayerId) {
-      this.props.getPlayersToDrop({ bid: this.state.bid, email: this.props.userEmailAddress });
+    async waiverProceedToDrop(addPlayerId) {
+      await this.props.getPlayersToDrop({ bid: this.state.bid, email: this.props.userEmailAddress });
 
-      if (this.props.waiverAddErrored !== "") {
+      if(this.props.waiverAddErrored == "") {
         this.setState({
           tradeModal:false,
           waiverDropModal:true
@@ -142,9 +145,9 @@ class PlayerList extends Component {
               <SemanticButton primary onClick={() => this.waiverProceedToDrop(this.state.selectedPlayer._id)}>
                 Bid<Icon name="arrow right"/>
               </SemanticButton>
-              <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
+              {/* <SemanticButton primary onClick={() => this.addPlayer(this.state.selectedPlayer)}>
                 <Icon name="checkmark"/>Add
-              </SemanticButton>
+              </SemanticButton> */}
             </SemanticModal.Actions>
           );
         } else if (this.state.selectedPlayer.owner === this.props.userEmailAddress) {
@@ -211,7 +214,7 @@ class PlayerList extends Component {
             <SemanticList.Item key={player._id}>
               <SemanticList.Content>
                 <SemanticList.Header>
-                  <SemanticButton icon onClick={()=>{this.setState({ waiverDropPlayerId:player._id, waiverDropPlayer:player.player });}}>
+                  <SemanticButton icon onClick={()=>{this.setState({ waiverDropPlayerId:player._id, waiverDropPlayer:player.player, disablePlaceWaiver: true });}}>
                     <Icon name='minus' size='large' verticalAlign='middle' />
                   </SemanticButton>
                   {player.player}
@@ -243,7 +246,7 @@ class PlayerList extends Component {
                 <SemanticHeader>Your Players</SemanticHeader>
                 <SemanticList divided relaxed>
                   {dropList}
-                  {this.props.waiverPlayersToDropCount < 18 &&
+                  {this.props.waiverPlayersToDropCount < 17 &&
                     <SemanticList.Item key='0'>
                       <SemanticList.Content>
                         <SemanticList.Header>
@@ -386,6 +389,7 @@ PlayerList.propTypes = {
 const mapStateToProps = (state) => {
     return {
         userEmailAddress: state.auth.userEmailAddress,
+        faab: state.auth.faab,
         players: state.players,
         playersHasErrored: state.playersHasErrored,
         playersIsLoading: state.playersIsLoading,
