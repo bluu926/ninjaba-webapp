@@ -1,5 +1,4 @@
 [
-    {"field": "owner", "header": "Owner", "filter": true, "filterMatchMode": "contains", "filterElement": "ownerFilter"},
     {"field": "player", "header": "Player", "filter": true, "filterMatchMode": "contains"},
     {"field": "tm", "header": "Team", "filter": true, "filterMatchMode": "contains",  "filterElement": "teamFilter"},
     {"field": "ps/g", "header": "PPG"},
@@ -9,5 +8,5 @@
     {"field": "ast", "header": "Assists"},
     {"field": "stl", "header": "Steals"},
     {"field": "blk", "header": "Blocks"},
-    {"field": "tov", "header": "Turnovers"}
+    {"field": "owner", "header": "Owner", "filter": true, "filterMatchMode": "contains", "filterElement": "ownerFilter"}
 ]
