@@ -246,7 +246,7 @@ class PlayerList extends Component {
                 <SemanticHeader>Your Players</SemanticHeader>
                 <SemanticList divided relaxed>
                   {dropList}
-                  {this.props.waiverPlayersToDropCount < 17 &&
+                  {this.props.waiverPlayersToDropCount < 18 &&
                     <SemanticList.Item key='0'>
                       <SemanticList.Content>
                         <SemanticList.Header>
