@@ -99,11 +99,23 @@ exports.dropPlayer = function(req, res, next) {
 }
 
 function recordTransaction(username, transactionType, playerName) {
-  let transaction = new Transaction({
-    username: username,
-    transactionType: transactionType,
-    playerName: playerName
-  });
+  let transaction = {};
+
+  // add
+  if (transactionType == 'add') {
+    transaction = new Transaction({
+      username: username,
+      transactionType: transactionType,
+      playerName: playerName
+    });
+  // drop
+  } else if (transactionType == 'drop') {
+    transaction = new Transaction({
+      username: username,
+      transactionType: transactionType,
+      dropPlayerName: playerName
+    });
+  }
 
   transaction.save(function(err, transaction) {
     if (err) { return err; }

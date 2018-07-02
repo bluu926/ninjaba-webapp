@@ -10,9 +10,17 @@ const TransactionSchema = new Schema({
 		type: String,
 		required: true
 	},
-	playerName: {
+	addPlayerName: {
 		type: String,
-		required: true
+		default: ''
+	},
+	dropPlayerName: {
+		type: String,
+		default: ''
+	},
+	waiverAmount: {
+		type: Number
+		default: 0
 	}
 },
 {

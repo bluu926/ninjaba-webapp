@@ -26,6 +26,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build-windows": "react-scripts build && move ./build ../server/client",
+    "build-macosx": "react-scripts build && mv ./build ../server/client",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

@@ -309,8 +309,10 @@ async function processWinner(waivee) {
 
   let transaction = new Transaction({
     username: owner.name,
-    transactionType: 'waiver add',
-    playerName: waivee.addPlayerName
+    transactionType: 'waiver',
+    addPlayerName: waivee.addPlayerName,
+    dropPlayerName: waivee.dropPlayerName,
+    waiverAmount: waivee.bid
   });
 
   await transaction.save();
@@ -323,13 +325,13 @@ async function processWinner(waivee) {
   if (waivee.dropPlayerId !== "") {
     await Player.findOneAndUpdate({ _id: waivee.dropPlayerId }, { owner: "--Free Agent--"});
 
-    let dropTransaction = new Transaction({
-      username: owner.name,
-      transactionType: 'waiver drop',
-      playerName: waivee.dropPlayerName
-    });
-
-    await dropTransaction.save();
+    // let dropTransaction = new Transaction({
+    //   username: owner.name,
+    //   transactionType: 'waiver drop',
+    //   playerName: waivee.dropPlayerName
+    // });
+    //
+    // await dropTransaction.save();
   } else {
     console.log("empty dont delete");
   }
