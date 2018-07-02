@@ -29,6 +29,6 @@ module.exports = function(app) {
   app.post('/api/waivee/cancelWaivee', requireAuth, Waivee.cancelWaivee);
 
   app.get('/*', function(req, res) {
-    res.sendFile('client/build/index.html');
+    res.sendFile('index.html');
   });
 }
