@@ -19,7 +19,7 @@ const TransactionSchema = new Schema({
 		default: ''
 	},
 	waiverAmount: {
-		type: Number
+		type: Number,
 		default: 0
 	}
 },
