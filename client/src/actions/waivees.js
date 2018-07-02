@@ -7,7 +7,9 @@ export const getOwnerWaivees = (waiveeProps, callback) => async dispatch => {
     dispatch({ type: WAIVEE_LIST_SUCCESS, payload: '' });
     dispatch({ type: WAIVEE_LIST_ERRORED, payload: '' });
 
-    const response = await axios.post(`${config.API_URL}/waivee/getOwnerWaivees`, waiveeProps);
+    const response = await axios.post(`${config.API_URL}/waivee/getOwnerWaivees`, waiveeProps, { headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
 
     dispatch({ type: WAIVEE_PLAYERS_LIST, payload: response.data });
     dispatch({ type: WAIVEE_LIST_SUCCESS, payload: 'Obtained ownders list of waivers successfully.' });
@@ -21,7 +23,9 @@ export const cancelWaivee = (waiveeProps, callback) => async dispatch => {
     dispatch({ type: WAIVEE_LIST_SUCCESS, payload: '' });
     dispatch({ type: WAIVEE_LIST_ERRORED, payload: '' });
 
-    const response = await axios.post(`${config.API_URL}/waivee/cancelWaivee`, waiveeProps);
+    const response = await axios.post(`${config.API_URL}/waivee/cancelWaivee`, waiveeProps, { headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
 
     dispatch({ type: WAIVEE_PLAYERS_LIST, payload: response.data });
     dispatch({ type: WAIVEE_LIST_SUCCESS, payload: 'Waiver cancelled successfully.' });

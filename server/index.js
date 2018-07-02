@@ -19,6 +19,7 @@ app.use(bodyParser.json({ type: '*/*'})); // Middleware in express
 app.use(express.static('data'));
 // Express serves static assets
 app.use(express.static('client/build'));
+
 router(app);
 
 // Server Setup

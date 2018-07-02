@@ -7,7 +7,9 @@ export const addWaiver = (waiverProps, callback) => async dispatch => {
     dispatch({ type: WAIVER_ADD_SUCCESS, payload: '' });
     dispatch({ type: WAIVER_ADD_ERRORED, payload: '' });
 
-    const response = await axios.post(`${config.API_URL}/waiver/addWaiver`, waiverProps);
+    const response = await axios.post(`${config.API_URL}/waiver/addWaiver`, waiverProps, { headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
 
     dispatch({ type: WAIVER_ADD_SUCCESS, payload: response.data.message });
   } catch(e) {
@@ -20,7 +22,9 @@ export const getPlayersToDrop = (waiverProps, callback) => async dispatch => {
     dispatch({ type: WAIVER_ADD_SUCCESS, payload: '' });
     dispatch({ type: WAIVER_ADD_ERRORED, payload: '' });
 
-    const response = await axios.post(`${config.API_URL}/waiver/getPlayersToDrop`, waiverProps);
+    const response = await axios.post(`${config.API_URL}/waiver/getPlayersToDrop`, waiverProps, { headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
 
     dispatch({ type: WAIVER_OWNER_DROPS, payload: response.data });
 
