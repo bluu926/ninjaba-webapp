@@ -27,5 +27,5 @@ module.exports = function(app) {
 
   app.post('/api/waivee/getOwnerWaivees', requireAuth, Waivee.getOwnerWaivees);
   app.post('/api/waivee/cancelWaivee', requireAuth, Waivee.cancelWaivee);
-
+  
 }
