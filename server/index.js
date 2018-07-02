@@ -22,6 +22,10 @@ app.use(express.static('client/build'));
 
 router(app);
 
+app.get('/*', function(req, res) {
+  res.sendFile(__dirname + 'index.html');
+});
+
 // Server Setup
 const port = process.env.PORT || 3090;
 // const port = process.env.PORT || 3000;
