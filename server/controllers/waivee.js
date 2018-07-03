@@ -67,7 +67,7 @@ exports.changeWaiveeRank = async function(req, res, next) {
   const waiveeToSwitchWith = await Waivee.findOne({ waiverId: waiveeToMove.waiverId, userId: waiveeToMove.userId, status: 'Active', bid: waiveeToMove.bid, rank: waiveeToMove.rank + rankChange });
 
   // it exists, and we can proceed.
-  if(waiveeToSwitchWith.length) {
+  if(waiveeToSwitchWith) {
     await Waivee.findOneAndUpdate({ _id: waiveeToMove._id }, { rank: waiveeToSwitchWith.rank, originalRank: waiveeToSwitchWith.rank });
     await Waivee.findOneAndUpdate({ _id: waiveeToSwitchWith._id }, { rank: waiveeToMove.rank, rank: waiveeToMove.rank });
 
