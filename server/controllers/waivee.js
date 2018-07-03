@@ -54,19 +54,20 @@ exports.changeWaiveeRank = async function(req, res, next) {
   const waiveeId = req.body.waiveeId;
   const movement = req.body.movement;
 
-  let rankChange = -1;
+  let rankChange = 1;
 
   if (movement == 'up') {
-    rankChange = 1;
+    rankChange = -1;
   }
   console.log("Swapping waivers, going into the direction of : " + rankChange);
   // get the Waivee documdent
   const waiveeToMove = await Waivee.findById(waiveeId);
-
+  console.log("Swapping: " + waiveeToMove.addPlayerName);
   // see if the rank above or below exist before proceeding
   const waiveeToSwitchWith = await Waivee.find({ waiverId: waiveeToMove.waiverId, userId: waiveeToMove.userId, status: 'Active', bid: waiveeToMove.bid, rank: waiveeToMove.rank + rankChange });
+  
   // it exists, and we can proceed.
-  if(waiveeToMove.length) {
+  if(waiveeToSwitchWith.length) {
     await Waivee.findOneAndUpdate({ _id: waiveeToMove._id }, { rank: waiveeToSwitchWith.rank });
     await Waivee.findOneAndUpdate({ _id: waiveeToSwitchWith._id }, { rank: waiveeToMove.rank });
 
@@ -76,7 +77,7 @@ exports.changeWaiveeRank = async function(req, res, next) {
 
     res.send({ waiveeList: waivees });
   } else {
-    res.send({ error: "Cannot set rank any higher." });
+    res.send({ error: "Cannot move the ranking of this Waivee." });
   }
 
 }
