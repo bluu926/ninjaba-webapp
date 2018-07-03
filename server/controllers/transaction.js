@@ -2,6 +2,20 @@ const Player = require('../models/player');
 const Transaction = require('../models/transaction');
 const config = require('../config');
 
+const testData = require('../data/testTransactions.json');
+
+exports.getTransactions = function (req, res, next) {
+  Transaction.find().sort({ player: 1 }).exec(function(err, transactions) {
+		if (err) { return next(err); }
+
+		res.send({ transactionsList: transactions });
+	});
+
+	// res.send({ transactionsList: testData });
+
+}
+
+// not used anymore
 exports.recordTransaction = function(req, res, next) {
 	const username = req.params.username;
 	const transactionType = req.params.transactionType;

@@ -1,5 +1,6 @@
 const Authentication = require('./controllers/authentication');
 const Player = require('./controllers/player');
+const Transaction = require('./controllers/transaction');
 const Waivee = require('./controllers/waivee');
 const Waiver = require('./controllers/waiver');
 const passportService = require('./services/passport');
@@ -20,6 +21,8 @@ module.exports = function(app) {
   app.get('/api/playertransaction/:playerId/:username/add', requireAuth, Player.addPlayer);
   app.get('/api/playertransaction/:playerId/:username/drop', requireAuth, Player.dropPlayer);
 
+  app.post('/api/transaction/getTransactions', Transaction.getTransactions);
+
   app.post('/api/waiver/addWaiver', requireAuth, Waiver.addWaiver);
   app.post('/api/waiver/getPlayersToDrop', requireAuth, Waiver.getPlayersToDrop);
 
@@ -27,5 +30,5 @@ module.exports = function(app) {
 
   app.post('/api/waivee/getOwnerWaivees', requireAuth, Waivee.getOwnerWaivees);
   app.post('/api/waivee/cancelWaivee', requireAuth, Waivee.cancelWaivee);
-  
+
 }

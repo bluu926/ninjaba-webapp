@@ -9,7 +9,8 @@ import {
 let leftItems = [
   { as: NavLink, exact: true, content: "Home", to: "/" },
   { as: NavLink, exact: true, content: "Dashboard", to: "/dashboard" },
-  { as: NavLink, exact: true, content: "Player", to: "/players" }
+  { as: NavLink, exact: true, content: "Players", to: "/players" },
+  { as: NavLink, exact: true, content: "Transactions", to: "/transactions" }
 ];
 let rightItems = [
   { as: NavLink, exact: true, content: "Register", to: "/signup" },

@@ -14,3 +14,6 @@ export const WAIVEE_LIST_SUCCESS = 'waivee_list_success';
 export const WAIVEE_LIST_ERRORED = 'waivee_list_errored';
 export const WAIVEE_CANCEL = 'waivee_cancel';
 export const WAIVEE_PLAYERS_LIST = 'waivee_players_list';
+export const TRANSACTIONS_ERRORED = 'transactions_errored';
+export const TRANSACTIONS_SUCCESS = 'transactions_success';
+export const TRANSACTIONS_LIST = 'transactions_list';

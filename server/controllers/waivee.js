@@ -26,25 +26,32 @@ exports.getOwnerWaivees = function(req, res, next) {
   // res.send({ waiveeList: testData });
 }
 
-exports.cancelWaivee = function(req, res, next) {
+exports.cancelWaivee = async function(req, res, next) {
   const waiveeId = req.body.waiveeId;
   const email = req.body.email;
 
-  Waivee.findOneAndRemove({ _id: waiveeId }, function(err, waivee) {
-    if (err) { return next(err); }
+  // get the document to remove
+  const waiveeToRemove = await Waivee.FindById(waiveeId);
 
-    Waiver.findOne({ active: true }, function(err, waiver) {
-      if (err) { return next(err); }
+  // remove the document
+  await Waivee.findOneAndRemove({ _id: waiveeId });
 
-      User.findOne({ email: email }, function(err, user) {
-        if (err) { return next(err); }
+  // get list of active waivees for user for particular bid
+  const reorderWaiveeRanks = await Waivee.find({ userId: waiveeToRemove.userId, waiverId: waiveeToRemove.waiverId, status: 'Active', bid: waiveeToRemove.bid }).sort({ rank: 1 });
 
-        Waivee.find({ userId: user._id, status: 'Active', waiverId: waiver._id }).sort({ bid: -1, rank: 1 }).exec( function(err, waivees) {
-          if (err) { return next(err); }
+  // loop through each document and update rank based and order
+  for (let i = 1; i < reorderWaiveeRanks.length + 1; i++) {
+    console.log("before update #: " + i + " reorderWaiveeRanks[i-1]: " + reorderWaiveeRanks[i-1]._id + " rank: " + reorderWaiveeRanks[i-1].rank);
+    if (reorderWaiveeRanks[i-1].rank != i) {
+      // update both rank and originalRank
+      await Waivee.findOneAndUpdate({ _id: reorderWaiveeRanks[i-1]._id }, { originalRank: i, rank: i });
+      console.log("updating rank !");
+    }
+  }
 
-          res.send({ waiveeList: waivees });
-        });
-      });
-    });
-  });
+  // get full list of waivees of user sorted by bid and rank
+  const waivees = await Waivee.find({ userId: reorderUser._id, status: 'Active', waiverId: reorderWaiver._id }).sort({ bid: -1, rank: 1 })
+
+  res.send({ waiveeList: waivees });
+
 }

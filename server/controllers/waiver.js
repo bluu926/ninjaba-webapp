@@ -164,11 +164,11 @@ exports.test = async function(req, res, next) {
 exports.processWaiver = async function(req, res, next) {
   // get current 'Active' status from waiver collection
   const waiver = await Waiver.findOne({ active: true });
-// await Waivee.update({}, { status: 'Active'}, {multi: true});
+
   // get all 'Active' status bids from waivee collection
   // AND all bids from the 'Active' waiver
   // also put all the Bids is order from highest to lowest
-  const waivees = await Waivee.find({ status: 'Active' }).sort({ bid: -1, rank: 1 });
+  const waivees = await Waivee.find({ waiverId: waiver._id, status: 'Active' }).sort({ bid: -1, rank: 1 });
 
   // process all waivee
   // Take the player current highest active bid (same players with same dont matter since its priority will be taken care of later)
@@ -312,10 +312,8 @@ async function processWinner(waivee) {
     transactionType: 'waiver',
     addPlayerName: waivee.addPlayerName,
     dropPlayerName: waivee.dropPlayerName,
-    waiverAmount: waivee.bid
+    waiverAmount: waivee.bid,
   });
-
-  await transaction.save();
 
   console.log("updated and won! new faab is: " + owner.faab);
 
@@ -355,14 +353,30 @@ async function processWinner(waivee) {
   await Waivee.update({ status: "Active", userId: owner._id, bid: { "$gt": owner.faab }, waiverId: waivee.waiverId}, { status: "Cancelled" }, {multi: true});
   console.log("Cancelling all bids that cant be covered by faab");
 
-  // cancel all waives that have the same addPlayerId
+  // cancel all owner waives that have the same addPlayerId
   await Waivee.update({ status: "Active", userId: owner._id, waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }, { status: "Cancelled" }, {multi: true});
   console.log("Cancelling all owner bids that have the same addPlayerId as the winner");
 
-  // cancel all waives that have the same addPlayerId
+  const losingWaivees = await Waivee.find({ status: "Active", waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }).sort({ bid: -1 });
+
+  for (let i = 0; i < losingWaivees.length; i++) {
+
+      const losingOwner = await User.findById(losingWaivees[i].userId);
+
+      // add these to the transaction to track waiver losers
+      console.log("adding loser to waiverLosers: " + losingOwner.email);
+      transactions.waiverLosers.push({
+        ownerEmail: losingOwner.email,
+    		player: losingWaivees[i].addPlayerName,
+    		bid: losingWaivees[i].bid
+      });
+  }
+
+  console.log("saving transactions");
+  await transaction.save();
+
+  // lose all other waivers that have the same addPlayerId
   await Waivee.update({ status: "Active", waiverId: waivee.waiverId, addPlayerId: waivee.addPlayerId }, { status: "Lost" }, {multi: true});
   console.log("Losing all otherbids that have the same addPlayerId as the winner");
 
-  // reorder ranks
-// await Waivee.update({}, { status: 'Active'}, {multi: true});
 }

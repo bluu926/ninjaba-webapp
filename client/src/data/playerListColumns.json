@@ -3,6 +3,7 @@
     {"field": "tm", "header": "Team", "filter": true,  "filterElement": "teamFilter"},
     {"field": "player", "header": "Player", "filter": true, "filterMatchMode": "contains"},
     {"field": "age", "header": "Age", "filter": true, "filterMatchMode": "contains"},
+    {"field": "pos", "header": "POS"},
     {"field": "g", "header": "G"},
     {"field": "gs", "header": "GS"},
     {"field": "mp", "header": "MP"},

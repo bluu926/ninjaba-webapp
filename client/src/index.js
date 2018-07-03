@@ -13,6 +13,7 @@ import Signin from './components/auth/Signin';
 import Signup from './components/auth/Signup';
 import Signout from './components/auth/Signout';
 import Dashboard from './components/Dashboard';
+import TransactionList from './components/players/TransactionList';
 import PlayerList from './components/players/PlayerList';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -37,6 +38,7 @@ ReactDOM.render(
         <Route path="/signup" component={Signup} />
         <Route path="/signout" component={Signout} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/transactions" component={TransactionList} />
         <Route path="/players" component={PlayerList} />
       </App>
     </BrowserRouter>

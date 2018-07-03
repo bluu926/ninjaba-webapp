@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1",
+    "username": "bluumail@gmail.com",
+    "transactionType": "add",
+    "addPlayerName": "Player 1",
+    "dropPlayerName": "Player 2",
+    "waiverAmount": 100,
+    "waiverLosers": [{
+      "ownerEmail": "Loser",
+      "player": "Player 1",
+      "bid": 10
+    }]
+  }
+]
