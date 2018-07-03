@@ -5,7 +5,7 @@ const config = require('../config');
 const testData = require('../data/testTransactions.json');
 
 exports.getTransactions = function (req, res, next) {
-  Transaction.find().sort({ player: 1 }).exec(function(err, transactions) {
+  Transaction.find().sort({ createdAt: -1 }).exec(function(err, transactions) {
 		if (err) { return next(err); }
 
 		res.send({ transactionsList: transactions });

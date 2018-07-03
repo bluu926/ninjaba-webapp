@@ -6,24 +6,12 @@ import { DataTable } from 'primereact/components/datatable/DataTable';
 
 import * as transactionActions from '../../actions/transactions';
 
-import ownersEmailToName from '../../data/ownersEmailToName.json';
-
-const ownerNames = {
-   "Ben" : "TEST"
-}
-
 class TransactionList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       rows: 25
     };
-
-    this.colTemplate = this.colTemplate.bind(this);
-  }
-
-  colTemplate(rowData, column){
-    return ownersEmailToName[rowData.username];
   }
 
   onPageChange(e) {
@@ -41,11 +29,12 @@ class TransactionList extends Component {
       <DataTable value={this.props.transactions} paginator={true} rows={this.state.rows}
         rowsPerPageOptions={[10,25,50,100]} onPage={(e) => {this.onPageChange(e)}} >
 
-        <Column field="username" body={this.colTemplate} header="Managers" />
+        <Column field="username" header="Managers" />
         <Column field="transactionType" header="Type" />
         <Column field="addPlayerName" header="Adds" />
         <Column field="dropPlayerName" header="Drops" />
         <Column field="waiverAmount" header="Bid Amount" />
+        <Column field="createdAt" header="Timestamp" />
         {/* waiverLosers: {
       		ownerEmail: String,
       		player: String,

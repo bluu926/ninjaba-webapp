@@ -19,6 +19,7 @@ import playerTeam from '../../data/playerTeam.json';
 import playerListColumnsDefault from '../../data/playerListColumnsDefault.json';
 import playerListColumns from '../../data/playerListColumns.json';
 import owner from '../../data/owners.json';
+import ownersEmailToName from '../../data/ownersEmailToName.json';
 
 import unknown from '../../images/avatars/players/unknown.png';
 import 'primereact/resources/primereact.min.css';
@@ -46,10 +47,15 @@ class PlayerList extends Component {
         this.onTeamChange = this.onTeamChange.bind(this);
         this.onOwnerChange = this.onOwnerChange.bind(this);
         this.onColumnToggle = this.onColumnToggle.bind(this);
+        this.colOwnerTemplate = this.colOwnerTemplate.bind(this);
     }
 
     componentDidMount() {
       this.props.fetchData();
+    }
+
+    colOwnerTemplate(rowData, column){
+      return ownersEmailToName[rowData.owner];
     }
 
     onPlayerSelect(e){
@@ -340,7 +346,7 @@ class PlayerList extends Component {
                 filterElement={teamFilter} />;
               } else if (col.filterElement === 'ownerFilter') {
                 return <Column key={col.field} field={col.field} header={col.header}
-                sortable={true} filter={col.filter} filterMatchMode={col.filterMatchMode}
+                sortable={true} body={this.colOwnerTemplate} filter={col.filter} filterMatchMode={col.filterMatchMode}
                 filterElement={ownerFilter} />;
               } else {
                 return <Column key={col.field} field={col.field} header={col.header}
