@@ -64,12 +64,12 @@ exports.changeWaiveeRank = async function(req, res, next) {
   const waiveeToMove = await Waivee.findById(waiveeId);
   console.log("Swapping: " + waiveeToMove.addPlayerName);
   // see if the rank above or below exist before proceeding
-  const waiveeToSwitchWith = await Waivee.find({ waiverId: waiveeToMove.waiverId, userId: waiveeToMove.userId, status: 'Active', bid: waiveeToMove.bid, rank: waiveeToMove.rank + rankChange });
-  
+  const waiveeToSwitchWith = await Waivee.findOne({ waiverId: waiveeToMove.waiverId, userId: waiveeToMove.userId, status: 'Active', bid: waiveeToMove.bid, rank: waiveeToMove.rank + rankChange });
+
   // it exists, and we can proceed.
   if(waiveeToSwitchWith.length) {
-    await Waivee.findOneAndUpdate({ _id: waiveeToMove._id }, { rank: waiveeToSwitchWith.rank });
-    await Waivee.findOneAndUpdate({ _id: waiveeToSwitchWith._id }, { rank: waiveeToMove.rank });
+    await Waivee.findOneAndUpdate({ _id: waiveeToMove._id }, { rank: waiveeToSwitchWith.rank, originalRank: waiveeToSwitchWith.rank });
+    await Waivee.findOneAndUpdate({ _id: waiveeToSwitchWith._id }, { rank: waiveeToMove.rank, rank: waiveeToMove.rank });
 
     console.log("swapping waivee exists");
     // get full list of waivees of user sorted by bid and rank
