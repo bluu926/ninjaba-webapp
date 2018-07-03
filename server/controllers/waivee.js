@@ -3,8 +3,6 @@ const User = require('../models/user');
 const Waivee = require('../models/waivee');
 const Waiver = require('../models/waiver');
 
-const testData = require('../data/testWaivees.json')
-
 // TODO: remove callback hell by using Promoises
 exports.getOwnerWaivees = function(req, res, next) {
   const email = req.body.email;
@@ -22,8 +20,6 @@ exports.getOwnerWaivees = function(req, res, next) {
       });
     });
   });
-
-  // res.send({ waiveeList: testData });
 }
 
 exports.cancelWaivee = async function(req, res, next) {
@@ -48,10 +44,38 @@ exports.cancelWaivee = async function(req, res, next) {
       console.log("updating rank !");
     }
   }
-
   // get full list of waivees of user sorted by bid and rank
   const waivees = await Waivee.find({ userId: waiveeToRemove.userId, status: 'Active', waiverId: waiveeToRemove.waiverId }).sort({ bid: -1, rank: 1 })
 
   res.send({ waiveeList: waivees });
+}
+
+exports.changeWaiveeRank = async function(req, res, next) {
+  const waiveeId = req.body.waiveeId;
+  const movement = req.body.movement;
+
+  let rankChange = -1;
+
+  if (movement == 'up') {
+    rankChange = 1;
+  }
+  console.log("Swapping waivers, going into the direction of : " + rankChange);
+  // get the Waivee documdent
+  const waiveeToMove = await Waivee.findById(waiveeId);
+
+  // see if the rank above or below exist before proceeding
+  const waiveeToSwitchWith = await Waivee.find({ waiverId: waiveeToMove.waiverId, userId: waiveeToMove.userId, status: 'Active', bid: waiveeToMove.bid, rank: waiveeToMove.rank + rankChange });
+  // it exists, and we can proceed.
+  if(waiveeAbove.length) {
+    await Waivee.findOneAndUpdate({ _id: waiveeToMove._id }, { rank: waiveeToSwitchWith.rank });
+    await Waivee.findOneAndUpdate({ _id: waiveeToSwitchWith._id }, { rank: waiveeToMove.rank });
+
+    // get full list of waivees of user sorted by bid and rank
+    const waivees = await Waivee.find({ userId: waiveeToMove.userId, status: 'Active', waiverId: waiveeToMove.waiverId }).sort({ bid: -1, rank: 1 })
+
+    res.send({ waiveeList: waivees });
+  } else {
+    res.send({ error: "Cannot set rank any higher." });
+  }
 
 }
