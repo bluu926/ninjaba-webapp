@@ -31,7 +31,7 @@ exports.cancelWaivee = async function(req, res, next) {
   const email = req.body.email;
 
   // get the document to remove
-  const waiveeToRemove = await Waivee.FindById(waiveeId);
+  const waiveeToRemove = await Waivee.findById(waiveeId);
 
   // remove the document
   await Waivee.findOneAndRemove({ _id: waiveeId });
