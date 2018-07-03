@@ -50,7 +50,7 @@ exports.cancelWaivee = async function(req, res, next) {
   }
 
   // get full list of waivees of user sorted by bid and rank
-  const waivees = await Waivee.find({ userId: waiveeToRemove._id, status: 'Active', waiverId: waiveeToRemove._id }).sort({ bid: -1, rank: 1 })
+  const waivees = await Waivee.find({ userId: waiveeToRemove.userId, status: 'Active', waiverId: waiveeToRemove.waiverId }).sort({ bid: -1, rank: 1 })
 
   res.send({ waiveeList: waivees });
 
