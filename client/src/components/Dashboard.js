@@ -49,7 +49,7 @@ class Dashboard extends Component {
       <div>
         <div style={styles}>
           <Message info>
-            <Message.Header>Thank you for signing up!</Message.Header>
+            <Message.Header>Thank you for signing in!</Message.Header>
             <p>Trading will be availble soon.</p>
           </Message>
         </div>
