@@ -12,7 +12,7 @@ export const getOwnerWaivees = (waiveeProps, callback) => async dispatch => {
       }});
 
     dispatch({ type: WAIVEE_PLAYERS_LIST, payload: response.data });
-    dispatch({ type: WAIVEE_LIST_SUCCESS, payload: 'Obtained ownders list of waivers successfully.' });
+    // dispatch({ type: WAIVEE_LIST_SUCCESS, payload: 'Obtained owners list of waivers successfully.' });
   } catch(e) {
     dispatch({ type: WAIVEE_LIST_ERRORED, payload: 'Error getting waivers list.' });
   }
@@ -31,5 +31,21 @@ export const cancelWaivee = (waiveeProps, callback) => async dispatch => {
     dispatch({ type: WAIVEE_LIST_SUCCESS, payload: 'Waiver cancelled successfully.' });
   } catch(e) {
     dispatch({ type: WAIVEE_LIST_ERRORED, payload: 'Erro cancelling waiver.' });
+  }
+};
+
+export const changeWaiveeRank = (waiveeProps, callback) => async dispatch => {
+  try {
+    dispatch({ type: WAIVEE_LIST_SUCCESS, payload: '' });
+    dispatch({ type: WAIVEE_LIST_ERRORED, payload: '' });
+
+    const response = await axios.post(`${config.API_URL}/waivee/changeWaiveeRank`, waiveeProps, { headers: {
+        "Authorization" : localStorage.getItem('token')
+      }});
+
+    dispatch({ type: WAIVEE_PLAYERS_LIST, payload: response.data });
+    dispatch({ type: WAIVEE_LIST_SUCCESS, payload: 'Waiver moved successfully.' });
+  } catch(e) {
+    dispatch({ type: WAIVEE_LIST_ERRORED, payload: e.response.data.error });
   }
 };

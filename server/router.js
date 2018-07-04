@@ -30,6 +30,6 @@ module.exports = function(app) {
 
   app.post('/api/waivee/getOwnerWaivees', requireAuth, Waivee.getOwnerWaivees);
   app.post('/api/waivee/cancelWaivee', requireAuth, Waivee.cancelWaivee);
-  app.post('/api/waivee/changeWaiveeRank', Waivee.changeWaiveeRank);
+  app.post('/api/waivee/changeWaiveeRank', requireAuth, Waivee.changeWaiveeRank);
 
 }

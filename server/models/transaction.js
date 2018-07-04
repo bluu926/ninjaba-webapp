@@ -22,11 +22,11 @@ const TransactionSchema = new Schema({
 		type: Number,
 		default: 0
 	},
-	waiverLosers: {
+	waiverLosers: [{
 		ownerEmail: String,
 		player: String,
 		bid: Number
-	}
+	}]
 },
 {
   	timestamps: true

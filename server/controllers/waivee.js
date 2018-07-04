@@ -77,7 +77,7 @@ exports.changeWaiveeRank = async function(req, res, next) {
 
     res.send({ waiveeList: waivees });
   } else {
-    res.send({ error: "Cannot move the ranking of this Waivee." });
+    res.status(422).json({ error: "Cannot move the ranking of this waiver for this bid." });
   }
 
 }

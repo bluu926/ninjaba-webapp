@@ -21,6 +21,32 @@ class Dashboard extends Component {
     this.props.cancelWaivee({ email: this.props.userEmailAddress, waiveeId });
   }
 
+  changeWaiveeRank(waiveeId, movement) {
+    this.props.changeWaiveeRank({ waiveeId, movement });
+  }
+
+  renderMessage() {
+    if(this.props.waiveeListSuccess) {
+        return (
+          <Message positive>
+            <Message.Header>Success!</Message.Header>
+            <p>{this.props.waiveeListSuccess}</p>
+          </Message>
+        );
+    }
+  }
+
+  renderAlert() {
+    if(this.props.waiveeListErrored) {
+      return (
+        <Message negative>
+          <Message.Header>Error!</Message.Header>
+          <p>{this.props.waiveeListErrored}</p>
+        </Message>
+      );
+    }
+  }
+
   render() {
     let waivees = this.props.waiveePlayersList;
 
@@ -28,18 +54,18 @@ class Dashboard extends Component {
       return (
         <List.Item key={waivee._id}>
           <List.Content>
-            <List.Header>
+            <Message>
               <Button icon onClick={() => this.cancelWaivee(waivee._id)}>
                 <Icon name='minus' size='large' verticalAlign='middle' />
               </Button>
-              <Button icon>
+              <Button icon onClick={() => this.changeWaiveeRank(waivee._id, 'down')}>
                 <Icon name='arrow down' size='large' verticalAlign='middle' />
               </Button>
-              <Button icon>
+              <Button icon onClick={() => this.changeWaiveeRank(waivee._id, 'up')}>
                 <Icon name='arrow up' size='large' verticalAlign='middle' />
               </Button>
-              Bidding <i>${waivee.bid}</i> to add <i>{waivee.addPlayerName}</i> to drop <i>{waivee.dropPlayerName}</i>.
-            </List.Header>
+              <strong>Bidding ${waivee.bid}</strong> to add <strong>{waivee.addPlayerName}</strong> to drop <strong>{waivee.dropPlayerName}</strong>.
+            </Message>
           </List.Content>
         </List.Item>
       );
@@ -54,6 +80,8 @@ class Dashboard extends Component {
           </Message>
         </div>
         <Divider />
+        {this.renderAlert()}
+        {this.renderMessage()}
         <div>
           <List selection>
             {dropList}
@@ -77,7 +105,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getOwnerWaivees: ({ email }) => dispatch(waiveeActions.getOwnerWaivees({ email })),
-        cancelWaivee: ({ email, waiveeId }) => dispatch(waiveeActions.cancelWaivee({ email, waiveeId }))
+        cancelWaivee: ({ email, waiveeId }) => dispatch(waiveeActions.cancelWaivee({ email, waiveeId })),
+        changeWaiveeRank: ({ waiveeId, movement }) => dispatch(waiveeActions.changeWaiveeRank({ waiveeId, movement })),
     };
 };
 

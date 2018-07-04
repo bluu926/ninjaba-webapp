@@ -365,7 +365,7 @@ async function processWinner(waivee) {
 
       // add these to the transaction to track waiver losers
       console.log("adding loser to waiverLosers: " + losingOwner.email);
-      transactions.waiverLosers.push({
+      transaction.waiverLosers.push({
         ownerEmail: losingOwner.email,
     		player: losingWaivees[i].addPlayerName,
     		bid: losingWaivees[i].bid
