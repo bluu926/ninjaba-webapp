@@ -251,7 +251,6 @@ class PlayerList extends Component {
                 /></div>}
                 <SemanticHeader>Your Players</SemanticHeader>
                 <SemanticList divided relaxed>
-                  {dropList}
                   {this.props.waiverPlayersToDropCount < 18 &&
                     <SemanticList.Item key='0'>
                       <SemanticList.Content>
@@ -264,6 +263,7 @@ class PlayerList extends Component {
                       </SemanticList.Content>
                     </SemanticList.Item>
                   }
+                  {dropList}
                 </SemanticList>
               </SemanticModal.Description>
             </SemanticModal.Content>
@@ -361,7 +361,7 @@ class PlayerList extends Component {
             {this.renderAlert()}
     				{this.renderMessage()}
             <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
-                  paginator={true}
+                  paginator={true} responsive={true}
                   rows={this.state.rows} selectionMode="single" rowsPerPageOptions={[10,25,50,100]} sortMode="multiple"
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
                   onRowSelect={this.onPlayerSelect} globalFilter={this.state.globalFilter}
