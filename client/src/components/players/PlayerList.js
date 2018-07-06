@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux';
-import { Button } from 'primereact/components/button/Button';
 import { Column } from 'primereact/components/column/Column';
 import { Dropdown } from 'primereact/components/dropdown/Dropdown';
 import { InputText } from 'primereact/components/inputtext/InputText';
@@ -107,7 +106,7 @@ class PlayerList extends Component {
     async waiverProceedToDrop(addPlayerId) {
       await this.props.getPlayersToDrop({ bid: this.state.bid, email: this.props.userEmailAddress });
 
-      if(this.props.waiverAddErrored == "") {
+      if(this.props.waiverAddErrored === "") {
         this.setState({
           tradeModal:false,
           waiverDropModal:true
@@ -330,9 +329,6 @@ class PlayerList extends Component {
                       </div>
                     </div>;
 
-        let paginatorLeft = <Button icon="pi pi-refresh" onClick={this.reset}/>;
-        let paginatorRight = <Button icon="fa fa-cloud-upload"/>;
-
         let teamFilter = <Dropdown readonly="true" style={{width: '100%'}} className="ui-column-filter"
                 value={this.state.team} options={playerTeam} onChange={this.onTeamChange}/>
 
@@ -361,7 +357,7 @@ class PlayerList extends Component {
             {this.renderAlert()}
     				{this.renderMessage()}
             <DataTable value={this.props.players} ref={(el) => { this.dt = el; }} header={header}
-                  paginator={true} responsive={true}
+                  paginator={true} responsive={false}
                   rows={this.state.rows} selectionMode="single" rowsPerPageOptions={[10,25,50,100]} sortMode="multiple"
                   selection={this.state.selectedPlayer} onSelectionChange={(e)=>{this.setState({selectedPlayer:e.data});}}
                   onRowSelect={this.onPlayerSelect} globalFilter={this.state.globalFilter}

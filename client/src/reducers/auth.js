@@ -1,4 +1,4 @@
-import { AUTH_USER, AUTH_ERROR, AUTH_USER_FAAB, AUTH_USER_EMAIL } from '../actions/types';
+import { AUTH_USER, AUTH_ERROR, AUTH_USER_EMAIL } from '../actions/types';
 
 const INITIAL_STATE = {
   authenticated: '',

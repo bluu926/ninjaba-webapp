@@ -1,27 +1,19 @@
 import _ from "lodash";
 import React, { Component } from 'react';
-// import Header from './Header';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import {
   Container, Icon, Image, Menu, Sidebar, Responsive
 } from "semantic-ui-react";
 
-let leftItems = [
-  { as: NavLink, exact: true, content: "Home", to: "/" },
-  { as: NavLink, exact: true, content: "Dashboard", to: "/dashboard" },
-  { as: NavLink, exact: true, content: "Players", to: "/players" },
-  { as: NavLink, exact: true, content: "Transactions", to: "/transactions" }
-];
-let rightItems = [
-  { as: NavLink, exact: true, content: "Register", to: "/signup" },
-  { as: NavLink, exact: true, content: "Sign In", to: "/signin" },
-  { as: NavLink, exact: true, content: "Sign out", to: "/signout" }
-];
-
 class App extends Component {
-  state = {
-    visible: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false
+    };
+  }
 
   handlePusher = () => {
     const { visible } = this.state;
@@ -32,6 +24,25 @@ class App extends Component {
   handleToggle = () => this.setState({ visible: !this.state.visible });
 
   render() {
+    let leftItems = [
+      { as: NavLink, key: '1', exact: true, content: "Home", to: "/" },
+      { as: NavLink, key: '2', exact: true, content: "Dashboard", to: "/dashboard" },
+      { as: NavLink, key: '3', exact: true, content: "Players", to: "/players" },
+      { as: NavLink, key: '4', exact: true, content: "Transactions", to: "/transactions" }
+    ];
+
+    let rightItems = [
+      { as: NavLink, key: '1', exact: true, content: "Register", to: "/signup" },
+      { as: NavLink, key: '2', exact: true, content: "Sign In", to: "/signin" },
+      { as: NavLink, key: '3', exact: true, content: "Sign out", to: "/signout" }
+    ];
+
+    if(this.props.authenticated) {
+      rightItems = [
+        { as: NavLink, key: '3', exact: true, content: "Sign out", to: "/signout" }
+      ];
+    }
+
     const { children } = this.props;
     const { visible } = this.state;
 
@@ -86,4 +97,8 @@ class App extends Component {
   }
 };
 
-export default App;
+function mapStateToProps(state) {
+  return { authenticated: state.auth.authenticated };
+}
+
+export default withRouter(connect(mapStateToProps)(App));

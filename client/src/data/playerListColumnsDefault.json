@@ -2,10 +2,5 @@
     {"field": "owner", "header": "Owner", "filter": true, "filterElement": "ownerFilter"},
     {"field": "player", "header": "Player", "filter": true, "filterMatchMode": "contains"},
     {"field": "tm", "header": "Team", "filter": true, "filterElement": "teamFilter"},
-    {"field": "pos", "header": "POS"},
-    {"field": "ps/g", "header": "PPG"},
-    {"field": "trb", "header": "T Reb"},
-    {"field": "ast", "header": "Ast"},
-    {"field": "stl", "header": "Stl"},
-    {"field": "blk", "header": "Blk"}
+    {"field": "pos", "header": "POS"}
 ]

@@ -55,16 +55,16 @@ export const playersTransaction = (playerId, username, transactionType) => async
     dispatch(playersTransactionSuccess(false));
     dispatch(playersTransactionErrored(false));
 
-    const response = await axios.get(`${config.API_URL}/playertransaction/${playerId}/${username}/${transactionType}`, {headers: {
+    await axios.get(`${config.API_URL}/playertransaction/${playerId}/${username}/${transactionType}`, {headers: {
         "Authorization" : localStorage.getItem('token')
       }});
 
-    const temp = await axios.get(`${config.API_URL}/players`, {headers: {
+    const response = await axios.get(`${config.API_URL}/players`, {headers: {
         "Authorization" : localStorage.getItem('token')
       }});
 
     dispatch(playersTransactionSuccess(true));
-    dispatch(playersFetchDataSuccess(temp.data.playerList));
+    dispatch(playersFetchDataSuccess(response.data.playerList));
 
   } catch(e) {
     dispatch(playersTransactionErrored(true));

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Column } from 'primereact/components/column/Column';
 import { DataTable } from 'primereact/components/datatable/DataTable';
 
+import requireAuth from '../requireAuth';
 import * as transactionActions from '../../actions/transactions';
 
 class TransactionList extends Component {
@@ -76,6 +77,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps)//,
-  // requireAuth
+  connect(mapStateToProps, mapDispatchToProps),
+  requireAuth
 )(TransactionList);

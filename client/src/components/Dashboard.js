@@ -111,6 +111,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
-  // requireAuth
+  connect(mapStateToProps, mapDispatchToProps),
+  requireAuth
 )(Dashboard);

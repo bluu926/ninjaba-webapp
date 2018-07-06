@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux'
 import { connect } from 'react-redux';
-import { Button, Icon, Form, Input, Label } from 'semantic-ui-react';
+import { Button, Icon, Form, Label } from 'semantic-ui-react';
 import * as actions from '../../actions';
 
 const required = value => (value || typeof value === 'number' ? undefined : 'Required');
