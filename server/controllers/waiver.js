@@ -34,67 +34,34 @@ exports.addWaiver = function(req, res, next) {
     bid = 0;
   }
 
-  User.findOne({ email: userEmail }, function(err, user) {
-    if (err) { return next(err); }
-    if (user.faab < bid) {
-      return res.status(422).json({ error: 'Your bid has exceeded your budget.' });
+  Player.find({ owner: userEmail }).count((err, totalPlayers) => {
+    console.log("Total # of players:" + totalPlayers);
+
+    if( totalPlayers > 17 && dropPlayerId === "") {
+      return res.status(422).json({ error: 'You have reached max roster, please drop someone.' });
     }
 
-    Player.findById(addPlayerId, function(err, addPlayer) {
-      if (err) {
-				return res.status(422).json({ error: 'No player was found.' });
-			}
-      console.log(addPlayer._id);
-      if (addPlayer.owner != '--Free Agent--') {
-  			return res.status(422).json({ error: 'Player is not available for waivers.' });
-  		}
+    User.findOne({ email: userEmail }, function(err, user) {
+      if (err) { return next(err); }
+      if (user.faab < bid) {
+        return res.status(422).json({ error: 'Your bid has exceeded your budget.' });
+      }
 
-      if (dropPlayerId == "") {
-        Waiver.findOne({ active: true }, function(err, waiver) {
-          if (err) { return next(err); }
+      Player.findById(addPlayerId, function(err, addPlayer) {
+        if (err) {
+  				return res.status(422).json({ error: 'No player was found.' });
+  			}
+        console.log(addPlayer._id);
+        if (addPlayer.owner != '--Free Agent--') {
+    			return res.status(422).json({ error: 'Player is not available for waivers.' });
+    		}
 
-          console.log(waiver);
-          Waivee.find({ status: 'Active', userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
-
-            let waivee = new Waivee({
-              userId: user._id,
-              waiverId: waiver._id,
-              addPlayerId: addPlayerId,
-              addPlayerName: addPlayer.player,
-              dropPlayerId: dropPlayerId,
-              dropPlayerName: '',
-              status: 'Active',
-              bid: bid,
-              rank: numOfSameBids + 1,
-              originalRank: numOfSameBids + 1
-            });
-
-            waivee.save(function(err, waivee) {
-              if (err) { return next(err); }
-
-              console.log('****** WAIVEE SAVED ******');
-              return res.status(200).json({
-                message: 'Waiver Successfully placed'
-              });
-
-            });
-          });
-        });
-      } else {
-        Player.findById(dropPlayerId, function(err, dropPlayer) {
-          if (err) {
-    				return res.status(422).json({ error: 'No player was found.' });
-    			}
-
-          if (dropPlayer.owner != userEmail) {
-      			return res.status(422).json({ error: 'Player is not on your team.' });
-      		}
-
+        if (dropPlayerId === "") {
           Waiver.findOne({ active: true }, function(err, waiver) {
             if (err) { return next(err); }
 
             console.log(waiver);
-            Waivee.find({ userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
+            Waivee.find({ status: 'Active', userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
 
               let waivee = new Waivee({
                 userId: user._id,
@@ -102,7 +69,7 @@ exports.addWaiver = function(req, res, next) {
                 addPlayerId: addPlayerId,
                 addPlayerName: addPlayer.player,
                 dropPlayerId: dropPlayerId,
-                dropPlayerName: dropPlayer.player,
+                dropPlayerName: '',
                 status: 'Active',
                 bid: bid,
                 rank: numOfSameBids + 1,
@@ -120,9 +87,50 @@ exports.addWaiver = function(req, res, next) {
               });
             });
           });
-        });
-      }
+        } else {
+          Player.findById(dropPlayerId, function(err, dropPlayer) {
+            if (err) {
+      				return res.status(422).json({ error: 'No player was found.' });
+      			}
 
+            if (dropPlayer.owner != userEmail) {
+        			return res.status(422).json({ error: 'Player is not on your team.' });
+        		}
+
+            Waiver.findOne({ active: true }, function(err, waiver) {
+              if (err) { return next(err); }
+
+              console.log(waiver);
+              Waivee.find({ userId: user._id, waiverId: waiver._id, bid: bid }).count((err, numOfSameBids) => {
+
+                let waivee = new Waivee({
+                  userId: user._id,
+                  waiverId: waiver._id,
+                  addPlayerId: addPlayerId,
+                  addPlayerName: addPlayer.player,
+                  dropPlayerId: dropPlayerId,
+                  dropPlayerName: dropPlayer.player,
+                  status: 'Active',
+                  bid: bid,
+                  rank: numOfSameBids + 1,
+                  originalRank: numOfSameBids + 1
+                });
+
+                waivee.save(function(err, waivee) {
+                  if (err) { return next(err); }
+
+                  console.log('****** WAIVEE SAVED ******');
+                  return res.status(200).json({
+                    message: 'Waiver Successfully placed'
+                  });
+
+                });
+              });
+            });
+          });
+        }
+
+      });
     });
   });
 }
