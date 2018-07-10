@@ -137,37 +137,19 @@ exports.addWaiver = function(req, res, next) {
 
 exports.test = async function(req, res, next) {
   // get current 'Active' status from waiver collection
-  const waiver = await Waiver.findOne({ active: true });
+  if (req.headers && req.headers.authorization) {
+      var authorization = headers.authorization,
+          decoded;
+      try {
+          decoded = jwt.verify(authorization, 'superduperisgood');
+      } catch (e) {
+          return res.status(401).send('unauthorized');
+      }
+      var userId = decoded.id;
 
-  // get all 'Active' status bids from waivee collection
-  // AND all bids from the 'Active' waiver
-  // also put all the Bids is order from highest to lowest
-  // const waivees = await Waivee.find({ status: 'Active' }).sort({ bid: -1 });
-  //
-  // // process all waivee
-  // // Take the player current highest active bid (same players with same dont matter since its priority will be taken care of later)
-  // for (let waivee of waivees) {
-  //   console.log(waivee.bid + "  " + waivee._id);
-  //
-  //   // see if the next waivee is still 'Active'.
-  //   const currentWaivee = await Waivee.findById(waivee._id);
-  //   console.log("***" + currentWaivee.bid + " | " + currentWaivee.status);
-  //
-  //   if (currentWaivee.status == 'Active') {
-  //
-  //     const waiveeGroup = await Waivee.find({ waiverId: waivee.waiverId, status: 'Active', bid: waivee.bid, addPlayerId: waivee.addPlayerId }).sort({ rank: 1 });
-  //
-  //     for (let i = 0; i < waiveeGroup.length; i++) {
-  //         let text = waiveeGroup[i];
-  //         console.log(text.bid + "  |  " + text.rank);
-  //     }
-  //
-  //   }
-  // }
-  //
-  // console.log("*****" + waiver);
+      console.log(userId);
+  }
 }
-
 
 exports.processWaiver = async function(req, res, next) {
   // get current 'Active' status from waiver collection
@@ -176,7 +158,11 @@ exports.processWaiver = async function(req, res, next) {
   // get all 'Active' status bids from waivee collection
   // AND all bids from the 'Active' waiver
   // also put all the Bids is order from highest to lowest
-  const waivees = await Waivee.find({ waiverId: waiver._id, status: 'Active' }).sort({ bid: -1, rank: 1 });
+  const waivees = await Waivee.find({ waiverId: waiver._id, status: 'Active' }).populate({ path: 'userId'}).sort({ bid: -1, rank: 1 });
+
+  waivees.sort(function (a, b) {
+    return a.bid - b.bid || a.userId.waiverPriority - b.userId.waiverPriority || a.rank - b.rank;
+  });
 
   // process all waivee
   // Take the player current highest active bid (same players with same dont matter since its priority will be taken care of later)

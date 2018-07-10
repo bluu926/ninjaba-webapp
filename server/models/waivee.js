@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const User = require('./user');
 
 // Define user model
 const waiveeSchema = new Schema({
-  userId: String,
+  userId: {
+    type: String,
+    ref: 'user'
+  },
   waiverId: String,
   addPlayerId: String,
   addPlayerName: String,

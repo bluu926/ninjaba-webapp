@@ -8,7 +8,7 @@ export const getTransactions = () => async dispatch => {
     dispatch({ type: TRANSACTIONS_ERRORED, payload: '' });
     dispatch({ type: TRANSACTIONS_SUCCESS, payload: '' });
 
-    const response = await axios.post(`${config.API_URL}/transaction/getTransactions`, { headers: {
+    const response = await axios.get(`${config.API_URL}/transaction/getTransactions`, { headers: {
         "Authorization" : localStorage.getItem('token')
       }});
     dispatch({ type: TRANSACTIONS_LIST, payload: response.data });
