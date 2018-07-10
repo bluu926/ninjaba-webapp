@@ -6,9 +6,9 @@ const mailService = require('../services/mailer');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
-  // const expires = moment().add(1, 'hours').valueOf();
+  // const expires = moment().add(5, 'minutes').unix();
 
-  return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
+  return jwt.encode({ sub: user.id, iat: timestamp}, config.secret);
 }
 
 exports.signin = function (req, res, next) {
