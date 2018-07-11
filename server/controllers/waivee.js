@@ -1,3 +1,5 @@
+const jwt = require('jwt-simple');
+const config = require('../config');
 const Player = require('../models/player');
 const User = require('../models/user');
 const Waivee = require('../models/waivee');

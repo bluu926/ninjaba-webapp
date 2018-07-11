@@ -1,3 +1,5 @@
+const jwt = require('jwt-simple');
+const config = require('../config');
 const Player = require('../models/player');
 const User = require('../models/user');
 const Transaction = require('../models/transaction');
@@ -136,19 +138,38 @@ exports.addWaiver = function(req, res, next) {
 }
 
 exports.test = async function(req, res, next) {
-  // get current 'Active' status from waiver collection
   if (req.headers && req.headers.authorization) {
-      var authorization = headers.authorization,
-          decoded;
-      try {
-          decoded = jwt.verify(authorization, 'superduperisgood');
-      } catch (e) {
-          return res.status(401).send('unauthorized');
-      }
-      var userId = decoded.id;
+    console.log(req.headers.authorization);
+    var token = req.headers.authorization;
+    let userId = '';
+    try {
+        userId = getEmailFromToken(token)
+    } catch (e) {
+      console.log(e);
+      console.log('errored!');
+      return res.status(401).send('unauthorized');
+    }
 
-      console.log(userId);
+    console.log('decoded in test: ' + userId);
+    // Fetch the user by id
   }
+
+  return res.send({ done: 'complete!'});
+}
+
+function getEmailFromToken(token) {
+  var authorization = token,
+      decoded;
+  try {
+      decoded = jwt.decode(authorization, config.secret);
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+  var userId = decoded.sub;
+
+  console.log('decoded: ' + userId);
+  return userId;
 }
 
 exports.processWaiver = async function(req, res, next) {
