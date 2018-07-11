@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { compose } from 'redux'
 import { connect } from 'react-redux';
-import { Button, Divider, Icon, List, Message } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon, List, Message, Segment, Table } from 'semantic-ui-react';
 import requireAuth from './requireAuth';
 import * as waiveeActions from '../actions/waivees';
 
@@ -15,6 +15,7 @@ const styles = {
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getOwnerWaivees({ email: this.props.userEmailAddress });
+    this.props.getOwnersWaiverPriority();
   }
 
   cancelWaivee(waiveeId) {
@@ -71,22 +72,61 @@ class Dashboard extends Component {
       );
     });
 
+    let owners = this.props.ownerList;
+
+    let ownersList = owners.map((owner, index) => {
+      return (
+        <Table.Row key={owner._id}>
+          <Table.Cell>
+            <Header as='h4'>
+              <Header.Content>
+                {owner.email}
+                <Header.Subheader>{owner.name}</Header.Subheader>
+              </Header.Content>
+            </Header>
+          </Table.Cell>
+          <Table.Cell>{owner.waiverPriority}</Table.Cell>
+          <Table.Cell>{owner.faab}</Table.Cell>
+        </Table.Row>
+      );
+    });
+
     return (
       <div>
-        <div style={styles}>
-          <Message info>
-            <Message.Header>Thank you for signing in!</Message.Header>
-            <p>Trading will be availble soon.</p>
-          </Message>
-        </div>
-        <Divider />
-        {this.renderAlert()}
-        {this.renderMessage()}
-        <div>
-          <List selection>
-            {dropList}
-          </List>
-        </div>
+        <Grid stackable columns={2}>
+          <Grid.Column width={12}>
+          <div style={styles}>
+            <Message info>
+              <Message.Header>Thank you for signing in!</Message.Header>
+              <p>Trading will be availble soon.</p>
+            </Message>
+          </div>
+          <Divider />
+          {this.renderAlert()}
+          {this.renderMessage()}
+          <div>
+            <List selection>
+              {dropList}
+            </List>
+          </div>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            <Segment>
+              <Table basic='very' celled collapsing>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Owner</Table.HeaderCell>
+                    <Table.HeaderCell>Waiver #</Table.HeaderCell>
+                    <Table.HeaderCell>Faab</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {ownersList}
+                </Table.Body>
+              </Table>
+            </Segment>
+          </Grid.Column>
+        </Grid>
       </div>
     );
   }
@@ -98,7 +138,10 @@ const mapStateToProps = (state) => {
         userEmailAddress: state.auth.userEmailAddress,
         waiveeListSuccess: state.waivee.waiveeListSuccess,
         waiveeListErrored: state.waivee.waiveeListErrored,
-        waiveePlayersList: state.waivee.waiveePlayersList
+        waiveePlayersList: state.waivee.waiveePlayersList,
+        ownerListSuccess: state.waivee.ownerListSuccess,
+        ownerListErrored: state.waivee.ownerListErrored,
+        ownerList: state.waivee.ownerList
     };
 };
 
@@ -107,6 +150,7 @@ const mapDispatchToProps = (dispatch) => {
         getOwnerWaivees: ({ email }) => dispatch(waiveeActions.getOwnerWaivees({ email })),
         cancelWaivee: ({ email, waiveeId }) => dispatch(waiveeActions.cancelWaivee({ email, waiveeId })),
         changeWaiveeRank: ({ waiveeId, movement }) => dispatch(waiveeActions.changeWaiveeRank({ waiveeId, movement })),
+        getOwnersWaiverPriority: () => dispatch(waiveeActions.getOwnersWaiverPriority())
     };
 };
 

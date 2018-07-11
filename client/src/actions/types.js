@@ -16,3 +16,6 @@ export const WAIVEE_PLAYERS_LIST = 'waivee_players_list';
 export const TRANSACTIONS_ERRORED = 'transactions_errored';
 export const TRANSACTIONS_SUCCESS = 'transactions_success';
 export const TRANSACTIONS_LIST = 'transactions_list';
+export const OWNER_LIST_SUCCESS = 'owner_list_success';
+export const OWNER_LIST_ERRORED = 'owner_list_errored';
+export const OWNER_LIST = 'owner_list';

@@ -6,6 +6,14 @@ const Transaction = require('../models/transaction');
 const Waivee = require('../models/waivee');
 const Waiver = require('../models/waiver');
 
+exports.getOwnersWaiverPriority = function(req, res, next) {
+  User.find().sort({ waiverPriority: 1 }).exec(function(err, users) {
+    if (err) { return next(err); }
+
+    res.send({ ownerList: users });
+  });
+}
+
 exports.getPlayersToDrop = function(req, res, next) {
   const userEmail = req.body.email;
   const bid = req.body.bid;
@@ -138,38 +146,41 @@ exports.addWaiver = function(req, res, next) {
 }
 
 exports.test = async function(req, res, next) {
-  if (req.headers && req.headers.authorization) {
-    console.log(req.headers.authorization);
-    var token = req.headers.authorization;
-    let userId = '';
-    try {
-        userId = getEmailFromToken(token)
-    } catch (e) {
-      console.log(e);
-      console.log('errored!');
-      return res.status(401).send('unauthorized');
-    }
+  let user = '';
 
-    console.log('decoded in test: ' + userId);
-    // Fetch the user by id
+  if (req.headers && req.headers.authorization) {
+    console.log("Here it is: " + req.headers.authorization);
+    try {
+        user = getUserFromToken(req.headers.authorization)
+    } catch (e) {
+      console.log('errored! ' + e);
+      return res.status(401).send({ error: "Unauthorized" });
+    }
+    console.log('decoded : ' + userEmail);
+  } else {
+    return res.status(401).send({ error: "Unauthorized" });
   }
 
+  // do stuff here
   return res.send({ done: 'complete!'});
 }
 
-function getEmailFromToken(token) {
+function getUserFromToken(token) {
   var authorization = token,
       decoded;
+
   try {
-      decoded = jwt.decode(authorization, config.secret);
+    decoded = jwt.decode(authorization, config.secret);
   } catch (e) {
     console.log(e);
     throw e;
   }
   var userId = decoded.sub;
 
-  console.log('decoded: ' + userId);
-  return userId;
+  const user = User.findById(userId);
+
+  console.log('decoded: ' + user.email);
+  return user;
 }
 
 exports.processWaiver = async function(req, res, next) {
