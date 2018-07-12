@@ -27,6 +27,7 @@ module.exports = function(app) {
   app.post('/api/waiver/getPlayersToDrop', requireAuth, Waiver.getPlayersToDrop);
 
   app.post('/api/waiver/processwaivers', Waiver.processWaiver);
+  app.post('/api/waiver/getOwnersWaiverPriority', Waiver.getOwnersWaiverPriority);
 
   app.post('/api/waivee/getOwnerWaivees', requireAuth, Waivee.getOwnerWaivees);
   app.post('/api/waivee/cancelWaivee', requireAuth, Waivee.cancelWaivee);

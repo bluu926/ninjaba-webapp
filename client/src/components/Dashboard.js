@@ -80,13 +80,13 @@ class Dashboard extends Component {
           <Table.Cell>
             <Header as='h4'>
               <Header.Content>
-                {owner.email}
-                <Header.Subheader>{owner.name}</Header.Subheader>
+                {owner.name}
+                {/* <Header.Subheader>{owner.name}</Header.Subheader> */}
               </Header.Content>
             </Header>
           </Table.Cell>
           <Table.Cell>{owner.waiverPriority}</Table.Cell>
-          <Table.Cell>{owner.faab}</Table.Cell>
+          <Table.Cell>${owner.faab}</Table.Cell>
         </Table.Row>
       );
     });
