@@ -39,6 +39,8 @@ exports.addWaiver = function(req, res, next) {
   const dropPlayerId = req.body.dropPlayerId;
   let bid = req.body.bid;
 
+  console.log("adding Waiver: " + userEmail + " | " + bid);
+
   if(!bid) {
     console.log("somehow bid came in null, set to 0");
     bid = 0;
