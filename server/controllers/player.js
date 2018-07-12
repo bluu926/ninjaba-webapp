@@ -1,14 +1,34 @@
 const Player = require('../models/player')
 const Transaction = require('../models/transaction')
 const config = require('../config');
+const WaiverController = require('./waiver');
 
 const testData = require('../data/testPlayers.json')
 
-exports.getPlayers = function (req, res, next) {
+exports.getPlayers = async function (req, res, next) {
+  let email;
+
+  // get email from jwt token
+  if (req.headers && req.headers.authorization) {
+    console.log("Here it is: " + req.headers.authorization);
+    try {
+        const user = await WaiverController.getUserFromToken(req.headers.authorization);
+        email = user.email;
+    } catch (e) {
+      console.log('errored! ' + e);
+      return res.status(401).send({ error: "Unauthorized" });
+    }
+    //console.log('waivee decoded email : ' + email.email);
+  } else {
+    return res.status(401).send({ error: "Unauthorized" });
+  }
+
+  console.log('email retrieved from jwt: ' + email);
+
   Player.find().sort({ player: 1 }).exec(function(err, players) {
 		if (err) { return next(err); }
 
-		res.send({ playerList: players });
+		res.send({ playerList: players, ownerEmail: email });
 	});
 
   // res.send({ playerList: testData });

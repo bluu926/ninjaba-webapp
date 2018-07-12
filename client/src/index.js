@@ -23,7 +23,6 @@ const store = createStore(
   {
     auth: {
       authenticated: localStorage.getItem('token'),
-      userEmailAddress: localStorage.getItem('email')
     }
   },
   composeEnhancers(applyMiddleware(reduxThunk))

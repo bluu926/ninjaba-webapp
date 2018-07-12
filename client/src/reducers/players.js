@@ -23,7 +23,7 @@ export function playersIsLoading(state = false, action) {
 export function players(state = [], action) {
     switch (action.type) {
         case PLAYERS_FETCH_DATA_SUCCESS:
-            return action.players;
+            return { players: action.players, ownerEmail: action.ownerEmail };
 
         default:
             return state;

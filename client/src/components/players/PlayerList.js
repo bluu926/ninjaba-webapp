@@ -104,7 +104,7 @@ class PlayerList extends Component {
     }
 
     async waiverProceedToDrop(addPlayerId) {
-      await this.props.getPlayersToDrop({ bid: this.state.bid, email: this.props.userEmailAddress });
+      await this.props.getPlayersToDrop({ bid: this.state.bid });
 
       if(this.props.waiverAddErrored === "") {
         this.setState({
@@ -115,9 +115,7 @@ class PlayerList extends Component {
     }
 
     addWaiver(addPlayerId, dropPlayerId, bid) {
-      // alert(playerId + ' ' + this.state.bid + ' '+ this.props.userEmailAddress);
       this.props.addWaiver({
-        email: this.props.userEmailAddress,
         addPlayerId,
         dropPlayerId,
         bid
@@ -390,9 +388,9 @@ PlayerList.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        userEmailAddress: state.auth.userEmailAddress,
         faab: state.auth.faab,
-        players: state.players,
+        players: state.players.players,
+        userEmailAddress: state.players.ownerEmail,
         playersHasErrored: state.playersHasErrored,
         playersIsLoading: state.playersIsLoading,
         playersTransactionSuccess: state.playersTransactionSuccess,
@@ -408,8 +406,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchData: () => dispatch(playersFetchData()),
         playersTransaction: (playerId, username, transactionType) => dispatch(playersTransaction(playerId, username, transactionType)),
-        addWaiver: ({ email, addPlayerId, dropPlayerId, bid }) => dispatch(waiverActions.addWaiver({ email, addPlayerId, dropPlayerId, bid })),
-        getPlayersToDrop: ({ bid, email }) => dispatch(waiverActions.getPlayersToDrop({ bid, email }))
+        addWaiver: ({ addPlayerId, dropPlayerId, bid }) => dispatch(waiverActions.addWaiver({ addPlayerId, dropPlayerId, bid })),
+        getPlayersToDrop: ({ bid }) => dispatch(waiverActions.getPlayersToDrop({ bid }))
     };
 };
 

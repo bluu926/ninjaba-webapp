@@ -14,8 +14,25 @@ exports.getOwnersWaiverPriority = function(req, res, next) {
   });
 }
 
-exports.getPlayersToDrop = function(req, res, next) {
-  const userEmail = req.body.email;
+exports.getPlayersToDrop = async function(req, res, next) {
+  let userEmail;
+
+  // get email from jwt token
+  if (req.headers && req.headers.authorization) {
+    console.log("Here it is: " + req.headers.authorization);
+    try {
+        const user = await exports.getUserFromToken(req.headers.authorization);
+        userEmail = user.email;
+    } catch (e) {
+      console.log('errored! ' + e);
+      return res.status(401).send({ error: "Unauthorized" });
+    }
+    //console.log('waivee decoded email : ' + email.email);
+  } else {
+    return res.status(401).send({ error: "Unauthorized" });
+  }
+  console.log('email retrieved from jwt: ' + userEmail);
+
   const bid = req.body.bid;
 
   User.findOne({ email: userEmail }, function(err, user) {
@@ -27,18 +44,34 @@ exports.getPlayersToDrop = function(req, res, next) {
 
     Player.find({ owner: userEmail }, function(err, players) {
   		if (err) { return next(err); }
-
+      console.log("getPlayersToDrop #players: " + players.length);
   		res.send({ playerToDropList: players, playerCount: players.length });
   	});
   });
 }
 
-exports.addWaiver = function(req, res, next) {
-  const userEmail = req.body.email;
+exports.addWaiver = async function(req, res, next) {
   const addPlayerId = req.body.addPlayerId;
   const dropPlayerId = req.body.dropPlayerId;
   let bid = req.body.bid;
 
+  let userEmail;
+
+  // get email from jwt token
+  if (req.headers && req.headers.authorization) {
+    console.log("Here it is: " + req.headers.authorization);
+    try {
+        const user = await exports.getUserFromToken(req.headers.authorization);
+        userEmail = user.email;
+    } catch (e) {
+      console.log('errored! ' + e);
+      return res.status(401).send({ error: "Unauthorized" });
+    }
+    //console.log('waivee decoded email : ' + email.email);
+  } else {
+    return res.status(401).send({ error: "Unauthorized" });
+  }
+  console.log('email retrieved from jwt: ' + userEmail);
   console.log("adding Waiver: " + userEmail + " | " + bid);
 
   if(!bid) {
@@ -148,17 +181,18 @@ exports.addWaiver = function(req, res, next) {
 }
 
 exports.test = async function(req, res, next) {
-  let user = '';
+  let email = '';
 
   if (req.headers && req.headers.authorization) {
     console.log("Here it is: " + req.headers.authorization);
     try {
-        user = getUserFromToken(req.headers.authorization)
+        const user = await exports.getUserFromToken(req.headers.authorization);
+        email = user.email;
     } catch (e) {
       console.log('errored! ' + e);
       return res.status(401).send({ error: "Unauthorized" });
     }
-    console.log('decoded : ' + userEmail);
+    //console.log('waivee decoded email : ' + email.email);
   } else {
     return res.status(401).send({ error: "Unauthorized" });
   }
@@ -167,7 +201,7 @@ exports.test = async function(req, res, next) {
   return res.send({ done: 'complete!'});
 }
 
-function getUserFromToken(token) {
+exports.getUserFromToken = async function(token) {
   var authorization = token,
       decoded;
 
@@ -179,7 +213,9 @@ function getUserFromToken(token) {
   }
   var userId = decoded.sub;
 
-  const user = User.findById(userId);
+  console.log('userId from token is: ' + userId);
+
+  const user = await User.findById(userId);
 
   console.log('decoded: ' + user.email);
   return user;

@@ -4,10 +4,28 @@ const Player = require('../models/player');
 const User = require('../models/user');
 const Waivee = require('../models/waivee');
 const Waiver = require('../models/waiver');
+const WaiverController = require('./waiver');
 
 // TODO: remove callback hell by using Promoises
-exports.getOwnerWaivees = function(req, res, next) {
-  const email = req.body.email;
+exports.getOwnerWaivees = async function(req, res, next) {
+  let email;
+
+  // get email from jwt token
+  if (req.headers && req.headers.authorization) {
+    console.log("Here it is: " + req.headers.authorization);
+    try {
+        const user = await WaiverController.getUserFromToken(req.headers.authorization);
+        email = user.email;
+    } catch (e) {
+      console.log('errored! ' + e);
+      return res.status(401).send({ error: "Unauthorized" });
+    }
+    //console.log('waivee decoded email : ' + email.email);
+  } else {
+    return res.status(401).send({ error: "Unauthorized" });
+  }
+
+  console.log('email retrieved from jwt: ' + email);
 
   Waiver.findOne({ active: true }, function(err, waiver) {
     if (err) { return next(err); }

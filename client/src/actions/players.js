@@ -19,7 +19,8 @@ export function playersIsLoading(bool) {
 export function playersFetchDataSuccess(players) {
   return {
     type: PLAYERS_FETCH_DATA_SUCCESS,
-    players
+    players: players.playerList,
+    ownerEmail: players.ownerEmail
   };
 }
 
@@ -44,7 +45,7 @@ export const playersFetchData = () => async dispatch => {
         "Authorization" : localStorage.getItem('token')
       }});
     dispatch(playersIsLoading(false));
-    dispatch(playersFetchDataSuccess(response.data.playerList));
+    dispatch(playersFetchDataSuccess(response.data));
   } catch(e) {
     dispatch(playersHasErrored(true));
   }
