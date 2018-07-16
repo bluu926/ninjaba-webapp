@@ -317,6 +317,15 @@ exports.processWaiver = async function(req, res, next) {
     }
   }
 
+  await Waiver.findOneAndUpdate({ active: true }, { active: false });
+
+  let newWaiver = new Waiver({
+    waiverNumber: waiver.waiverNumber + 1,
+    active: true
+  });
+
+  await newWaiver.save();
+
   res.send({ success: 'Complete!' });
 
   // If there are no ties of bids for this player, the owner of the bid has won

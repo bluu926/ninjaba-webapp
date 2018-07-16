@@ -7,7 +7,7 @@ import { Dropdown } from 'primereact/components/dropdown/Dropdown';
 import { InputText } from 'primereact/components/inputtext/InputText';
 import { MultiSelect } from 'primereact/components/multiselect/MultiSelect';
 import { DataTable } from 'primereact/components/datatable/DataTable';
-import { Button as SemanticButton, Input as SemanticInput, Header as SemanticHeader,
+import { Grid, Button as SemanticButton, Input as SemanticInput, Header as SemanticHeader,
   Message as SemanticMessage, Image as SemanticImage, List as SemanticList, Modal as SemanticModal} from 'semantic-ui-react'
 import { Icon, Message, Table } from 'semantic-ui-react';
 import { playersFetchData, playersTransaction } from '../../actions/players';
@@ -191,15 +191,50 @@ class PlayerList extends Component {
                   <p>{this.props.playersTransactionErrored}</p>
                   <p>{this.props.waiverAddErrored}</p>
                 </Message>}
-                <SemanticHeader>{this.state.selectedPlayer.player}</SemanticHeader>
-                <Table celled>
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>Team</Table.Cell>
-                      <Table.Cell>{this.state.selectedPlayer.tm}</Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
-                </Table>
+                <SemanticHeader>
+                  <SemanticHeader as='h2'>
+                    {this.state.selectedPlayer.player}
+                    <SemanticHeader.Subheader>Owner: {this.state.selectedPlayer.owner}</SemanticHeader.Subheader>
+                  </SemanticHeader>
+                </SemanticHeader>
+                <Grid stackable columns={2}>
+                  <Grid.Column width={8}>
+                  <Table celled>
+                    <Table.Body>
+                      <Table.Row>
+                        <Table.Cell><strong>Team</strong></Table.Cell>
+                        <Table.Cell>{this.state.selectedPlayer.tm}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell><strong>Pos</strong></Table.Cell>
+                        <Table.Cell>{this.state.selectedPlayer.pos}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell><strong>PPG</strong></Table.Cell>
+                        <Table.Cell>{this.state.selectedPlayer[`ps/g`]}</Table.Cell>
+                      </Table.Row>
+                    </Table.Body>
+                  </Table>
+                  </Grid.Column>
+                  <Grid.Column width={8}>
+                    <Table celled>
+                      <Table.Body>
+                        <Table.Row>
+                          <Table.Cell><strong>REB</strong></Table.Cell>
+                          <Table.Cell>{this.state.selectedPlayer.trb}</Table.Cell>
+                        </Table.Row>
+                        <Table.Row>
+                          <Table.Cell><strong>AST</strong></Table.Cell>
+                          <Table.Cell>{this.state.selectedPlayer.ast}</Table.Cell>
+                        </Table.Row>
+                        <Table.Row>
+                          <Table.Cell><strong>BLK</strong></Table.Cell>
+                          <Table.Cell>{this.state.selectedPlayer.blk}</Table.Cell>
+                        </Table.Row>
+                      </Table.Body>
+                    </Table>
+                  </Grid.Column>
+                </Grid>
               </SemanticModal.Description>
             </SemanticModal.Content>
             {this.getFooter()}
